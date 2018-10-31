@@ -1,0 +1,943 @@
+$input-height: 40px;
+$input-border: 1px solid darken($light-color, 5%);
+$input-font: 400 16px/1.2 $basic-font-family;
+
+label{
+  font: $input-font;
+  font-weight: 500;
+  display: block;
+  text-align: left;
+  &.required{
+    &:after{
+      color: red;
+      content: '*';
+      font-weight: 500;
+      font-size: 18px;
+      margin-left: 5px;
+    }
+  }
+}
+
+form{
+
+  text-align: center;
+  width: 100%;
+
+  &.error{
+    color: $warning-color;
+    select, input:not(.button), textarea{
+      border-color: $warning-color;
+    }
+  }
+
+  label{
+    margin-top: 15px;
+    &:first-child{
+      margin-top: 0;
+    }
+  }
+  label + .upload{
+    margin-top: 5px;
+  }
+}
+
+fieldset{
+  display: block;
+  border: $input-border;
+  border-radius: 0;
+  padding: 20px;
+  &:not(:first-child){
+    margin-top: 15px;
+  }
+}
+
+legend{
+  font: $input-font;
+  font-weight: 600;
+  display: block;
+  margin: 0 -10px;
+  padding: 0 10px;
+}
+
+/*-------------------------------------------------input, textarea-------------------------------------------------*/
+[type="text"],
+[type="password"],
+[type="search"],
+[type="number"],
+[type="tel"],
+[type="email"],
+[type="url"],
+textarea{
+  @include transition;
+  background: $inverted-color;
+  border: $input-border;
+  border-radius: 0;
+  box-shadow: none !important;
+  color: $basic-color;
+  display: inline-block;
+  font: $input-font;
+  height: $input-height;
+  margin: 0;
+  outline: none;
+  padding: 0 10px;
+  vertical-align: middle;
+  -webkit-appearance: none;
+  width: 100%;
+  @include respond-to(custom-not-touch){
+    &:hover, &:active, &:focus {
+      border-color: $first-color;
+    }
+  }
+  &[disabled], &[readonly]{
+    border: $input-border;
+    background: transparentize($light-color, .5);
+    color: transparentize($basic-color, .5);
+    cursor: default;
+  }
+  &.error{
+    border-color: $first-color;
+    color: $first-color;
+    font-size: 16px;
+    font-weight: 400;
+    margin-top: 0;
+    outline: 1px solid $first-color;
+  }
+  &.small{
+    display: inline-block;
+    height: 30px;
+    font-size: 13px;
+    width: auto;
+  }
+}
+
+
+.focus-large{
+  @include transition;
+  &:focus {
+    min-height: 200px;
+  }
+}
+
+
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=number] {
+  -moz-appearance:textfield;
+}
+
+input::-moz-placeholder{opacity: .5;}
+input::-webkit-input-placeholder{opacity: .5;}
+input:-ms-input-placeholder{opacity: .5;}
+input::-ms-input-placeholder{opacity: .5;}
+input::placeholder{opacity: .5;}
+
+body textarea{
+  border-radius: $global-border-radius;
+  height: 106px;
+  min-height: 106px;
+  line-height: 1.3;
+  padding-bottom: .5rem;
+  padding-top: .5rem;
+  resize: vertical;
+  -webkit-appearance: none;
+  &.small{
+    height: 64px;
+    min-height: 64px;
+    width: 100%;
+    &.focus-large:focus {
+      min-height: 100px;
+    }
+    @include respond-to(custom-small-down){
+      min-height: 100px;
+      &.focus-large:focus {
+        min-height: 200px;
+      }
+    }
+  }
+  &.large{
+    min-height: 300px;
+    &.focus-large:focus {
+      min-height: 600px;
+    }
+    @include respond-to(custom-small-down){
+      min-height: 500px;
+      &.focus-large:focus {
+        min-height: 1000px;
+      }
+    }
+  }
+}
+
+/*----------------------------------------------------checkboxes---------------------------------------------------------*/
+input[type="checkbox"]{
+  display: none;
+  visibility: hidden;
+  &[disabled]{
+    & + label{
+      opacity: .5;
+      cursor: default;
+      @include respond-to(custom-not-touch){
+        &:hover, &:focus{
+          &:before{
+            background-color: lighten($light-color, 15%);
+            border-color: darken($light-color, 15%);
+          }
+        }
+      }
+    }
+    &[checked] + label{
+      @include respond-to(custom-not-touch){
+        &:hover, &:focus{
+          &:before{
+            background-color: $basic-color;
+            border-color: $basic-color;
+          }
+        }
+      }
+    }
+  }
+  & + label{
+    @include align-middle;
+    @include user-select-none;
+    font-weight: 400;
+    margin-bottom: 0;
+    min-height: 22px;
+    padding-left: 30px;
+    position: relative;
+    @include respond-to(custom-not-touch){
+      &:hover, &:focus{
+        &:before{
+          background-color: $basic-color-light;
+          border-color: $basic-color-light;
+        }
+      }
+    }
+  }
+  & + label:before{
+    @include align-middle;
+    @include user-select-none;
+    background-color: lighten($light-color, 15%);
+    border: $input-border;
+    content: '';
+    height: 20px;
+    margin-right: 5px;
+    left: 0;
+    position: absolute;
+    top: -2px;
+    width: 20px;
+  }
+  &:checked + label:before{
+    @include icon(-240px, 0, 20px, 20px);
+    background-color: $basic-color;
+    border-color: $basic-color;
+  }
+  &.error + label{
+    color: $first-color;
+    font-weight: 400;
+    &:before{
+      border-color: $first-color;
+      outline: 1px solid $first-color;
+    }
+  }
+}
+
+
+.inputs-list{
+  @include clear-list;
+  @include clearfix;
+  li{
+    margin: 10px 0;
+    text-align: left;
+  }
+  label{
+    margin-top: 0 !important;
+    margin-bottom: 0;
+  }
+  &.centered{
+    @include centered-list;
+  }
+  &.small{
+    li{
+      margin: 5px 0;
+    }
+    label{
+      font-size: 14px;
+    }
+    [type="radio"] + label{
+      &:before, &:after{
+        margin-top: -2px;
+      }
+    }
+  }
+}
+
+
+
+form .text-left{
+  position: relative;
+  & > input[type="checkbox"], input[type="radio"]{
+    & + label:before{
+      left: 0;
+      position: absolute !important;
+    }
+    & + label{
+      margin-top: 20px;
+      padding-left: 30px;
+    }
+  }
+}
+
+
+.btn-check{
+  [type="checkbox"] + label{
+    @include align-middle;
+    background: $light-color;
+    border: 4px solid $light-color;
+    border-radius: $global-border-radius;
+    cursor: pointer;
+    height: $input-height;
+    line-height: $input-height;
+    margin: 0;
+    position: relative;
+    width: $input-height * 2;
+    @include respond-to(custom-not-touch){
+      &:hover{
+        background: darken($light-color, 10%);
+        border-color: darken($light-color, 10%);
+      }
+    }
+    &:before{
+      @include transition;
+      background: $inverted-color !important;
+      border: none;
+      height: 100%;
+      left: 0;
+      position: absolute;
+      top: 0;
+      width: 50%;
+    }
+  }
+  [type="checkbox"]:checked + label{
+    background-color: $basic-color-light;
+    border-color: $basic-color-light;
+    color: $inverted-color;
+    position: relative;
+    opacity: 1;
+    &:before{
+      height: 100%;
+      left: 50%;
+      width: 50%;
+    }
+  }
+}
+
+/*----------------------------------------------------radio---------------------------------------------------------*/
+input[type="radio"]{
+  display: none;
+  visibility: hidden;
+  &[disabled]{
+    & + label{
+      opacity: .5;
+      cursor: default;
+      @include respond-to(custom-not-touch){
+        &:hover, &:focus{
+          &:before{
+            background-color: lighten($light-color, 15%);
+            border-color: darken($light-color, 15%);
+          }
+        }
+      }
+    }
+    &[checked] + label{
+      @include respond-to(custom-not-touch){
+        &:hover, &:focus{
+          &:before{
+            background-color: $basic-color;
+            border-color: $basic-color;
+          }
+        }
+      }
+    }
+  }
+  & + label{
+    @include align-middle;
+    @include user-select-none;
+    font-weight: 400;
+    min-height: 22px;
+    padding-left: 30px;
+    position: relative;
+    @include respond-to(custom-not-touch){
+      &:hover, &:focus{
+        &:before{
+          background-color: $basic-color-light;
+          border-color: $basic-color-light;
+        }
+      }
+    }
+  }
+  & + label:before{
+    @include align-middle;
+    @include user-select-none;
+    background-color: lighten($light-color, 15%);
+    border: $input-border;
+    border-radius:  50%;
+    content: '';
+    height: 20px;
+    margin-right: 5px;
+    left: 0;
+    position: absolute;
+    width: 20px;
+  }
+  &:checked + label{
+    &::before{
+      @include icon(0, -80px, 20px, 20px);
+      background-color: $basic-color;
+      border-color: $basic-color;
+    }
+    &:after{
+      @include transform-translate(-50%, -50%);
+      background: $inverted-color;
+      border-radius: 50%;
+      content: '';
+      display: block;
+      height: 10px;
+      left: 11px;
+      position: absolute;
+      top: 11px;
+      width: 10px;
+      z-index: 5;
+    }
+  }
+  &.error + label{
+    color: $first-color;
+    font-weight: 400;
+    &:before{
+      border-color: $first-color;
+      outline: 1px solid $first-color;
+    }
+  }
+}
+
+
+.btn-input{
+  input[type="radio"], input[type="checkbox"]{
+    & + label{
+      background: $light-color;
+      border: none;
+      border-radius: $global-border-radius;
+      cursor: pointer;
+      display: inline-block;
+      height: $input-height;
+      line-height: $input-height;
+      margin: 0 1px 5px 0;
+      padding: 0 20px;
+      position: relative;
+      vertical-align: top;
+      width: auto;
+      @include respond-to(custom-not-touch){
+        &:hover{
+          background: darken($light-color, 10%);
+        }
+      }
+      &:before, &:after{
+        display: none;
+      }
+    }
+    &:checked + label{
+      background-color: $basic-color-light;
+      color: $inverted-color;
+      position: relative;
+      opacity: 1;
+    }
+  }
+}
+
+
+/*----------------------------------------------------select---------------------------------------------------------*/
+select{
+  background: url(../img/select-arrow.png) no-repeat right center $inverted-color;
+  border: $input-border;
+  box-shadow: none !important;
+  color: $basic-color;
+  display: inline-block;
+  font: $input-font;
+  height: $input-height;
+  margin: 0;
+  outline: none;
+  padding: 0 30px 0 10px;
+  vertical-align: middle;
+  width: 100%;
+  @include respond-to(custom-not-touch){
+    &:hover, &:active, &:focus {
+      border-color: $first-color;
+    }
+  }
+  &[disabled]{
+    border: $input-border;
+    color: transparentize($basic-color, .5);
+    cursor: default;
+  }
+  option{
+    font-size: 16px;
+  }
+  &.small{
+    display: inline-block;
+    height: 30px;
+    font-size: 13px;
+    width: auto;
+    option{
+      font-size: 13px;
+    }
+  }
+  -webkit-appearance: none;
+  line-height: 1em;
+  /* for FF */
+  -moz-appearance: none;
+  text-indent: 0.01px;
+  text-overflow: '';
+  /* for IE */
+  -ms-appearance: none;
+  appearance: none !important;
+  &.error{
+    border-color: $first-color;
+    color: $first-color;
+    font-size: 16px;
+    font-weight: 400;
+    margin-top: 0;
+    outline: 1px solid $first-color;
+  }
+  &[multiple]{
+    background: $inverted-color;
+    height: auto;
+    max-height: 200px;
+    option{
+      padding: 5px 0;
+    }
+  }
+}
+
+select::-ms-expand {
+  display: none;
+}
+
+/*----------------------------------------------------buttons---------------------------------------------------------*/
+$button-height: $input-height;
+$button-border-width: 2px;
+$button-line-height: $button-height - ($button-border-width * 2);
+
+body button, body [type="submit"], body [type="button"]{
+  background: none;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
+  font: 600 15px $basic-font-family;
+  padding: 0;
+  -webkit-appearance: none;
+  &.description{
+    font-size: 12px;
+  }
+  &:focus, &:active{
+    outline: none;
+  }
+}
+
+.button, body .button, body [type="submit"].button, body [type="button"].button{
+  @include transition($property:background);
+  @include align-middle;
+  background: $first-color;
+  border: none;
+  border-radius: $global-border-radius;
+  color: $inverted-color;
+  cursor: pointer;
+  font: $input-font;
+  font-weight: 600;
+  height: auto;
+  line-height: 1.4;
+  padding: 9px 20px;
+  text-align: center;
+  text-transform: none;
+  @include respond-to(custom-not-touch){
+    &:hover, &:active{
+      background: $first-color-dark;
+      &[disabled], &.disabled{
+        background: $first-color;
+      }
+    }
+  }
+
+  &:not(.inverted){
+    border: none !important;
+  }
+  
+
+  &.with-arrow{
+    @include respond-to(custom-not-touch){
+      &:hover, &:active{
+        &:after{
+          border-color: $inverted-color;
+        }
+      }
+    }
+    &.active{
+      &:after{
+        border: 2px solid $basic-color;
+        border-left-width: 0;
+        border-bottom-width: 0;
+        margin-top: 0;
+        margin-bottom: -14px;
+      }
+      &:hover, &:active{
+        @include respond-to(custom-not-touch){
+          &:after{
+            border-color: $inverted-color;
+          }
+        }
+      }
+    }
+
+  }
+
+  &.light{
+    background: $light-color;
+    color: $basic-color;
+    text-shadow: none;
+    @include respond-to(custom-not-touch){
+      &:hover, &:active{
+        background: darken($light-color, 15%);
+        &[disabled], &.disabled{
+          background: transparent;
+        }
+      }
+    }
+  }
+
+  &.btns{
+    margin: 5px 3px;
+  }
+
+  &.inverted{
+    border: 2px solid $first-color;
+    background: transparent;
+    color: $first-color;
+    padding: 7px 16px;
+    @include respond-to(custom-not-touch){
+      &:hover, &:active{
+        background: $first-color;
+        border-color: $first-color;
+        color: $inverted-color;
+        &[disabled], &.disabled{
+          background: transparent;
+        }
+      }
+    }
+  }
+
+  &.white{
+    background: $inverted-color;
+    color: $basic-color;
+    @include respond-to(custom-not-touch){
+      &:hover, &:active{
+        background: $basic-color;
+        color: $inverted-color;
+        &[disabled], &.disabled{
+          background: $inverted-color;
+          color: $basic-color;
+        }
+      }
+    }
+    &.inverted{
+      background: transparent;
+      border: 2px solid $inverted-color;
+      color: $inverted-color;
+      padding: 5px 16px;
+      @include respond-to(custom-not-touch){
+        &:hover, &:active{
+          background: $inverted-color;
+          color: $basic-color;
+          &[disabled], &.disabled{
+            background: transparent;
+            color: $inverted-color;
+          }
+        }
+      }
+    }
+  }
+
+  &.basic{
+    background: $basic-color;
+    @include respond-to(custom-not-touch){
+      &:hover, &:active{
+        background: $basic-color;
+        &[disabled], &.disabled{
+          background: $basic-color;
+        }
+      }
+    }
+    &.inverted{
+      background: transparent;
+      border-color: $basic-color;
+      color: $basic-color;
+      @include respond-to(custom-not-touch){
+        &:hover, &:active{
+          background: $basic-color;
+          border-color: $basic-color;
+          color: $inverted-color;
+          &[disabled], &.disabled{
+            background: transparent;
+            color: $basic-color;
+          }
+        }
+      }
+    }
+  }
+
+  &.rounded{
+    border-radius: 15px;
+    &.large{
+      border-radius: 30px;
+    }
+  }
+
+  &.small{
+    font-size: 13px;
+    text-shadow: 0 0 2px $first-color-dark;
+    padding: 5px 16px;
+    &.inverted, &.light{
+      text-shadow: none;
+    }
+    &.inverted{
+      font-weight: 700;
+      padding: 3px 14px;
+    }
+  }
+
+  &.xsmall{
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 7px;
+    &.inverted, &.white-inverted{
+      padding: 1px 5px;
+    }
+  }
+
+  &.tag{
+    @extend .small;
+    @extend .light;
+    border-radius: 10px;
+    color: $basic-color-light;
+    font-weight: 600;
+    margin-bottom: 5px;
+    margin-right: 5px;
+    &.active{
+      background: $first-color;
+      color: $inverted-color;
+    }
+  }
+
+  &.delete, &.plus, &.minus{
+    border-radius: 50%;
+    height: 24px;
+    padding: 0;
+    position: relative;
+    width: 24px;
+    &:before, &:after{
+      @include transform-translate(-50%, -50%);
+      background: $inverted-color;
+      content: '';
+      display: block;
+      left: 50%;
+      position: absolute;
+      top: 50%;
+    }
+    &:active{
+      top: 1px;
+    }
+  }
+
+  &.light{
+    &.delete, &.plus, &.minus{
+      &:before, &:after{
+        background: $basic-color;
+      }
+    }
+  }
+
+  &.basic.inverted{
+    &.delete, &.plus, &.minus{
+      background: transparent;
+      border: none;
+      &:before, &:after{
+        background: $basic-color;
+      }
+    }
+  }
+
+
+  &.minus{
+    &:before{
+      height: 2px;
+      width: 8px;
+    }
+  }
+
+  &.plus{
+    &:before{
+      height: 2px;
+      width: 8px;
+    }
+    &:after{
+      height: 8px;
+      width: 2px;
+    }
+  }
+
+  &.delete{
+    &:before{
+      @include transform-rotate(-45deg);
+    }
+    &:after{
+      @include transform-rotate(45deg);
+    }
+    &:before, &:after{
+      height: 2px;
+      width: 10px;
+      margin-left: -5px;
+      margin-top: -1px;
+    }
+
+    &.medium{
+      height: 36px;
+      width: 36px;
+      &:before, &:after{
+        height: 2px;
+        width: 18px;
+        margin-left: -9px;
+        margin-top: -1px;
+      }
+    }
+
+    &.large{
+      height: 40px;
+      width: 40px;
+      &:before, &:after{
+        height: 2px;
+        width: 24px;
+        margin-left: -11px;
+        margin-top: -1px;
+      }
+    }
+  }
+
+}
+
+[type="submit"], [type="button"]{
+  line-height: 1.4 !important;
+}
+
+body .button[disabled], body .button.disabled{
+  cursor: default;
+  opacity: .5;
+}
+
+.btns-wrapper{
+  margin: -5px -3px;
+}
+
+.btns-list{
+  li > .button{
+    width: 100%;
+  }
+}
+
+
+/*------------------------------------------------- files upload -----------------------------------------------------*/
+.js-upload{
+  display: none;
+}
+
+body .basic-form label.upload{
+  margin-top: 0;
+}
+.upload{
+  margin-bottom: 0;
+  position: relative;
+  .button{
+    left: 0;
+    position: absolute;
+    top: 0;
+    &.xsmall{
+      //font-size: 12px !important;
+      //padding: 2px 5px !important;
+    }
+  }
+  [multiple] + .button.small + .filename{
+    padding-left: 170px;
+  }
+  .button.small + .filename{
+    height: 30px;
+    font-size: 13px;
+    padding-left: 160px;
+  }
+  .button.xsmall + .filename{
+    height: 23px;
+    font-size: 12px;
+    padding-left: 115px;
+  }
+  [multiple] + .button + .filename{
+    padding-left: 195px;
+  }
+  .filename{
+    background: transparent;
+    border: none;
+    font-weight: 400;
+    padding-left: 185px;
+    padding-right: 15px;
+    text-overflow: ellipsis;
+  }
+  @include respond-to(custom-small-down){
+    width: 100%;
+    .button{
+      position: static !important;
+    }
+    .filename{
+      padding-left: 0 !important;
+      padding-right: 0;
+    }
+    & + [type="submit"]{
+      margin-top: 10px;
+    }
+  }
+  &.disabled{
+    .button{
+      background: transparent;
+      color: $basic-color;
+      opacity: .5;
+    }
+  }
+}
+
+
+.text-center{
+  .upload{
+    display: table;
+    margin: 0 auto;
+    width: auto;
+  }
+}
+
+.upload.full-width{
+  display: block;
+  text-align: left;
+  width: 100%;
+}
+
+
+.datepicker{
+  background-image: url(../img/calendar.png);
+  background-position: right center;
+  background-repeat: no-repeat;
+  padding-right: 41px;
+}

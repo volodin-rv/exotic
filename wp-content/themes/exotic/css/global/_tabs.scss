@@ -1,0 +1,76 @@
+.tabs{
+  @include transition;
+  @include clear-list;
+  @include flexbox;
+  @include flex-wrap;
+  align-content: stretch;
+  background: none;
+  border: none;
+  border-radius: 0;
+  display: table;
+  padding: 0;
+  width: 100%;
+  vertical-align: middle;
+  li{
+    @include transition;
+    @include width-counter;
+    border: 1px solid transparent;
+    border-bottom-color: darken($light-color, 15%);
+    display: table-cell;
+    margin: 0;
+    vertical-align: middle;
+  }
+  &.large{
+    a{
+      padding: 20px;
+    }
+  }
+  a{
+    border-bottom: none;
+    display: inline-block;
+    height: 100%;
+    padding: 10px 20px;
+    text-align: center;
+  }
+
+  .active{
+    border-color: darken($light-color, 15%);
+    border-bottom-color: transparent;
+    a{
+      font-weight: 600;
+      @include respond-to(custom-not-touch){
+        &:hover, &:focus, &:active{
+          color: $basic-color;
+          cursor: default;
+        }
+      }
+    }
+  }
+}
+
+.basic-form{
+  .tabs{
+    a{
+      padding: 5px 10px;
+    }
+  }
+  .tabs-content{
+    padding: 20px;
+  }
+}
+
+.tabs-content{
+  border: 1px solid darken($light-color, 15%);
+  border-top: none;
+  display: none;
+  padding: 40px;
+  &.active{
+    display: block;
+  }
+  .button.basic.inverted{
+    &.active{
+      background: $basic-color;
+      color: $inverted-color;
+    }
+  }
+}

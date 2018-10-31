@@ -1,0 +1,138 @@
+$custom-min: 0;
+
+$custom-xsmall-min: 320px;
+$custom-xsmall-max: 479px;
+
+$custom-small-min: 480px;
+$custom-small-max: 639px;
+
+$custom-medium-min: 640px;
+$custom-medium-max: 1023px;
+
+$custom-large-min: 1024px;
+$custom-large-max: 1279px;
+
+$custom-xlarge-min: 1280px;
+
+@mixin respond-to($media) {
+
+  @if $media == custom-min-up{
+    @media only screen and (min-width: $custom-min){
+      @content;
+    }
+    //0 and up
+  }@else if media == custom-xsmall-up{
+    @media only screen and (min-width: $custom-xsmall-min){
+      @content;
+    }
+    //320 and up
+  }@else if $media == custom-xsmall-only{
+    @media only screen and (min-width: $custom-xsmall-min) and (max-width: $custom-xsmall-max){
+      @content;
+    }
+    //320 - 479
+  } @else if $media == custom-xsmall-down{
+    @media only screen and (max-width: $custom-xsmall-max){
+      @content;
+    }
+    //479 and down
+  }@else if $media == custom-xxsmall-down{
+    @media only screen and (max-width: $custom-xsmall-min){
+      @content;
+    }
+    //320 and down
+  }
+
+  @else if $media == custom-small-up{
+    @media only screen and (min-width: $custom-small-min){
+      @content;
+    }
+    //480 and up
+  } @else if $media == custom-small-only{
+    @media only screen and (min-width: $custom-small-min) and (max-width: $custom-small-max){
+      @content;
+    }
+    //480 - 639
+  } @else if $media == custom-small-down{
+    @media only screen and (max-width: $custom-small-max){
+      @content;
+    }
+    //639 and down
+  }
+
+  @else if $media == custom-medium-up{
+    @media only screen and (min-width: $custom-medium-min){
+      @content;
+    }
+    //640 and up
+  } @else if $media == custom-medium-only{
+    @media only screen and (min-width: $custom-medium-min) and (max-width: $custom-medium-max){
+      @content;
+    }
+    //640 - 1023
+  } @else if $media == custom-medium-down{
+    @media only screen and (max-width: $custom-medium-max){
+      @content;
+    }
+    //1023 and down
+  }
+
+  @else if $media == custom-large-up{
+    @media only screen and (min-width: $custom-large-min){
+      @content;
+    }
+    //1024 and up
+  } @else if $media == custom-large-only{
+    @media only screen and (min-width: $custom-large-min) and (max-width: $custom-large-max){
+      @content;
+    }
+    //1024 - 1279
+  } @else if $media == custom-large-down{
+    @media only screen and (max-width: $custom-large-max){
+      @content;
+    }
+    //1279 and down
+  }
+
+  @else if $media == custom-xlarge-up{
+    @media only screen and (min-width: $custom-xlarge-min){
+      @content;
+    }
+    //1280 and up
+  }
+  @else if $media == custom-xlarge-down{
+    @media only screen and (max-width: $custom-xlarge-min){
+      @content;
+    }
+    //1280 and down
+  }
+
+  /* for not touch */
+  @else if $media == custom-not-touch{
+    @media only screen and (min-width: 1025px){
+      @content;
+    }
+    //1025 and up
+  }
+  /* for touch */
+  @else if $media == custom-touch{
+    @media only screen and (max-width: 1024px){
+      @content;
+    }
+    //1024 and down
+  }
+    /* for touch */
+  @else if $media == custom-tablet-down{
+    @media only screen and (max-width: 767px){
+      @content;
+    }
+    //1024 and down
+  }
+}
+
+/*for custom media for resizing window on desktop*/
+@mixin respond-to-custom($custom-min, $custom-max){
+  @media only screen and (min-width: $custom-min) and (max-width: $custom-max){
+    @content;
+  }
+}

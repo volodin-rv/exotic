@@ -1,0 +1,79 @@
+footer{
+  background: $first-color;
+  color: $inverted-color;
+  font-size: 18px;
+  margin-top: 80px;
+  padding-top: 40px;
+  a{
+    @include transition;
+    border-bottom-color: transparent;
+    @include respond-to(custom-not-touch){
+      &:hover, &:focus{
+        color: $inverted-color;
+        border-bottom-color: transparentize($inverted-color, .5);
+      }
+    }
+  }
+  .columns:last-child{
+    text-align: right;
+  }
+}
+
+
+.social-icons{
+  @include clear-list;
+  li{
+    display: inline-block;
+    &:not(:first-child){
+      margin-left: 10px;
+    }
+  }
+  [class*="-icon"]{
+    background: url(../img/social-icons.png) no-repeat;
+    display: inline-block;
+    height: 40px;
+    opacity: .5;
+    vertical-align: middle;
+    width: 40px;
+    @include respond-to(custom-not-touch){
+      &:hover, &:focus, &:active{
+        opacity: 1;
+      }
+    }
+  }
+  a{
+    border-bottom: none;
+  }
+  .ok-icon{
+    background-position: 0 0;
+  }
+  .vk-icon{
+    background-position: -45px 0;
+  }
+  .fb-icon{
+    background-position: -90px 0;
+  }
+  .tw-icon{
+    background-position: -135px 0;
+  }
+  .ig-icon{
+    background-position: -180px 0;
+  }
+}
+
+footer{
+
+  @include respond-to(custom-medium-down){
+    a{
+      border-bottom-color: transparentize($inverted-color, .5);
+    }
+  }
+
+  @include respond-to(custom-small-down){
+    .columns{
+      text-align: center !important;
+    }
+  }
+
+}
+

@@ -1,0 +1,125 @@
+/*--------------------------------------------------- news pages -----------------------------------------------------*/
+.news-info{
+  margin: 0 auto;
+  padding: 0 10px;
+  position: relative;
+  &.video{
+    .news-txt{
+      @include transform-translate(0, 0);
+      box-shadow: none;
+      margin: 0 auto 35px;
+      padding: 0 20px;
+      position: static;
+      max-width: $row-width/12*8;
+      width: 100%;
+    }
+    .signature{
+      margin-top: 0;
+      text-align: center;
+      &:before{
+        display: none;
+      }
+    }
+  }
+}
+
+.news-img{
+  @include a-block;
+  @include img-wrapper;
+  height: 380px;
+  max-width: $row-width/12*8 - 32px;
+  width: 100%;
+  z-index: 0;
+  @include respond-to(custom-xlarge-down){
+    margin: 0 auto;
+  }
+}
+
+.news-txt{
+  @include transform-translate(0, -50%);
+  background: $inverted-color;
+  box-shadow: $global-box-shadow;
+  padding: 30px 40px;
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  width: 50%;
+  z-index: 1;
+  @include respond-to(custom-xlarge-down){
+    @include transform-translate(0, 0);
+    box-shadow: none;
+    margin: 0 auto 40px;
+    max-width: $row-width/12*8;
+    padding: 0 20px;
+    position: static;
+    width: 100%;
+  }
+}
+
+.signature{
+  font-size: 12px;
+  margin-top: 40px;
+  opacity: .7;
+  position: relative;
+  &:before{
+    border-top: 1px solid $basic-color-light;
+    content: '';
+    display: block;
+    margin-bottom: 10px;
+    width: 40%;
+  }
+  a{
+    border-bottom: none;
+  }
+  @include respond-to(custom-xlarge-down){
+    display: none;
+  }
+}
+
+
+/*-------------------------------------------------- all news -------------------------------------------------------*/
+.news-items{
+  @include flexbox;
+  @include justify-content-center;
+  @include respond-to(custom-medium-down){
+    padding: 0 10px;
+    .columns{
+      padding: 0 10px;
+    }
+  }
+}
+
+
+.news-item{
+  @include transition;
+  @include a-block;
+  @include block-hover;
+  height: 100%;
+  overflow: hidden;
+  position: relative;
+  top: 0;
+  @include respond-to(custom-not-touch){
+    &:hover, &:active{
+      top: -10px;
+    }
+  }
+  img{
+    height: auto;
+    width: 100%;
+  }
+  span{
+    @include gradient($basic-color, transparent, bottom, top);
+    bottom: 0;
+    color: $inverted-color;
+    display: block;
+    font-weight: 600;
+    left: 0;
+    padding: 60px 20px 20px;
+    position: absolute;
+    text-shadow: 0 0 1px $basic-color;
+    text-transform: uppercase;
+    width: 100%;
+    z-index: 5;
+  }
+}
+

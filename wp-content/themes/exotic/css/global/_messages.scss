@@ -1,0 +1,43 @@
+.message{
+  background: $first-color;
+  border-radius: $global-border-radius;
+  color: $inverted-color;
+  font-weight: 600;
+  margin: 0 0 15px;
+  padding: 16px 40px 16px 50px;
+  position: relative;
+  vertical-align: middle;
+  width: auto;
+  &:before{
+    display: block;
+    content: '!';
+    font-size: 30px;
+    line-height: .6;
+    left: 20px;
+    margin-right: 20px;
+    position: absolute;
+  }
+  p{
+    margin: auto 0 !important;
+  }
+  a{
+    border-bottom-color: transparentize($inverted-color, .6);
+  }
+  .button.delete{
+    position: absolute;
+    right: 10px;
+    top: 10px;
+  }
+  &.warning{
+    background: $first-color;
+  }
+  &.basic{
+    background: $basic-color;
+  }
+  table th, table td{
+    color: $inverted-color;
+    display: block;
+    width: 100%;
+  }
+}
+

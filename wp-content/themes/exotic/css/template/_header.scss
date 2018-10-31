@@ -1,0 +1,131 @@
+header.row{
+  min-height: 57px;
+  padding: 40px 20px;
+}
+
+header .button{
+  float: right;
+}
+
+
+/*---------------------------------------------------- logo --------------------------------------------------------*/
+.logo{
+  @include transform-translate(-50%, -50%);
+  border-bottom: none;
+  display: block;
+  height: 57px;
+  left: 50%;
+  padding-bottom: 0;
+  position: absolute;
+  top: 50%;
+  width: 348px;
+  @include respond-to(custom-not-touch){
+    &:hover, &:focus, &:active{
+      opacity: .7;
+    }
+  }
+}
+
+/*---------------------------------------------------- phone -------------------------------------------------------*/
+.phone{
+  @include transition($speed: 100ms);
+  border-bottom: none;
+  display: block;
+  font-size: 18px;
+  font-weight: 600;
+  float: left;
+  margin-top: 9px;
+  max-width: $row-width/4 - 40px;
+  padding-bottom: 0;
+  &:before{
+    @include icon(-40px, -40px, 20px, 20px);
+    content: '';
+    margin-right: 5px;
+  }
+}
+
+
+/*------------------------------------------------ navigation icon -------------------------------------------------*/
+.nav-icon{
+  height: 60px;
+  width: 60px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  &:before, &:after{
+    @include transition;
+    @include transform-translate(-50%, -50%);
+    border-top: 3px solid $inverted-color;
+    content: '';
+    display: block;
+    left: 50%;
+    position: absolute;
+    top: 50%;
+    width: 30px;
+  }
+  &:before{
+    border-bottom: 3px solid $inverted-color;
+    height: 20px;
+  }
+  &.active{
+    background: $basic-color-light;
+    &:before, &:after{
+      margin-top: -2px;
+      margin-left: -15px;
+      width: 30px;
+    }
+    &:before{
+      @include transform-rotate(45deg);
+      border-bottom: none;
+      height: auto;
+    }
+    &:after{
+      @include transform-rotate(-45deg);
+    }
+  }
+}
+
+
+/*---------------------------------------------- adaptive header ---------------------------------------------------*/
+@include respond-to(custom-large-up){
+  .nav-icon{
+    display: none !important;
+  }
+}
+
+@include respond-to(custom-medium-down){
+  header.row{
+    min-height: 0;
+    padding: 0 0 0;
+    text-align: center;
+    &:before{
+      background: $basic-color;
+      content: '';
+      display: block;
+      height: 60px;
+      width: 100%;
+      z-index: -1;
+    }
+  }
+  .logo{
+    @include transform-translate(0, 0);
+    height: auto;
+    position: static;
+    margin: 40px auto;
+    max-width: 280px;
+  }
+  .phone{
+    display: inline-block;
+    float: none;
+    margin: 0 auto;
+    width: auto;
+  }
+  header .button.basic.inverted{
+    border-color: $inverted-color;
+    color: $inverted-color;
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    z-index: 1;
+  }
+}

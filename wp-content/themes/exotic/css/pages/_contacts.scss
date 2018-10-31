@@ -1,0 +1,83 @@
+/*----------------------------------------------------- order -------------------------------------------------------*/
+.contacts{
+  overflow: hidden;
+  position: relative;
+  .contacts-wrapper{
+    @include gradient($inverted-color, transparent, left, right);
+    padding: 0 200px 80px 100px;
+  }
+  img{
+    @include transform-translate(-32%, -50%);
+    height: 101%;
+    left: 50%;
+    max-width: none;
+    position: absolute;
+    top: 50%;
+    width: auto;
+  }
+  @include respond-to(custom-medium-down){
+    margin-top: 40px;
+    .row{
+      padding-left: 0;
+    }
+    .contacts-wrapper{
+      padding: 0 0 60px 0;
+    }
+    .table-contacts td{
+      font-weight: 600;
+    }
+  }
+  @include respond-to(custom-small-down){
+    .row{
+      padding-left: 10px;
+    }
+    .contacts-wrapper{
+      padding: 0 0 60px;
+    }
+    img{
+      display: none;
+    }
+    .table-contacts td{
+      font-weight: 400;
+    }
+  }
+}
+
+
+.contacts-title{
+  background: $first-color;
+  color: $inverted-color;
+  margin-bottom: 40px;
+  padding: 60px 20px 40px;
+  position: relative;
+  &:before, &:after{
+    background: $first-color;
+    bottom: -9px;
+    content: '';
+    display: block;
+    height: 20%;
+    position: absolute;
+    width: 50%;
+    z-index: 0;
+  }
+  &:before{
+    @include transform-skew(0, -5deg);
+    left: 50%;
+  }
+  &:after{
+    @include transform-skew(0, 5deg);
+    right: 50%;
+  }
+  & > *{
+    position: relative;
+    z-index: 1;
+  }
+}
+
+.table-contacts{
+  margin-top: 60px;
+  th{
+    font-weight: 600;
+  }
+}
+

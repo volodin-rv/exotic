@@ -1,0 +1,182 @@
+@mixin active-link{
+  border-color: $basic-color;
+  color: inherit;
+}
+
+
+nav{
+  background: $light-color;
+  color: $basic-color;
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+
+nav{
+  text-align: center;
+  & > ul{
+    @include clear-list;
+    @include clearfix;
+    & > li{
+      @include width-counter;
+      float: left;
+      margin-bottom: 0;
+      &.active > a{
+        @include active-link;
+        &:before{
+          border: 8px solid transparent;
+          border-top: 6px solid $basic-color;
+          content: '';
+          display: block;
+          left: 50%;
+          margin-left: -4px;
+          position: absolute;
+          top: 0;
+        }
+      }
+      @include respond-to(custom-not-touch){
+        &:hover, &:focus{
+          ul{
+             max-height: 300px;
+           }
+        }
+      }
+      & > a{
+        @include transition;
+        border-top: 2px solid transparent;
+        padding: 13px 20px;
+        @include respond-to(custom-not-touch){
+          &:hover, &:focus{
+            @include active-link;
+          }
+        }
+      }
+    }
+  }
+
+  a{
+    border-bottom: none;
+    display: block;
+    text-transform: uppercase;
+  }
+
+  ul ul{
+    @include clear-list;
+    background: $light-color;
+    left: 0;
+    position: absolute;
+    max-height: 0;
+    margin-top: 0;
+    min-width: 350px;
+    overflow: hidden;
+    text-align: left;
+    top: 50px;
+    -webkit-transition: max-height 0.4s linear;
+    -moz-transition: max-height 0.4s linear;
+    transition: max-height 0.4s linear;
+    z-index: 1000;
+    li{
+      border-bottom: 1px solid darken($light-color, 5%);
+      margin-bottom: 0;
+      &:last-child{
+        border-bottom: none;
+      }
+    }
+    li.active > a{
+      @include active-link;
+    }
+    a{
+      font-weight: 400;
+      font-size: 13px;
+      padding: 10px 20px;
+      @include respond-to(custom-not-touch){
+        &:hover, &:focus{
+          background: $basic-color-light;
+          color: $inverted-color;
+        }
+      }
+    }
+    @include respond-to(custom-touch){
+      display: none;
+    }
+  }
+
+}
+
+
+/* adaptive navigation */
+nav{
+  @include respond-to(custom-large-only){
+    font-size: 14px;
+    font-weight: 400;
+    padding-right: 0;
+  }
+}
+
+nav{
+  @include respond-to(custom-large-up){
+    display: block !important;
+  }
+}
+
+
+@include respond-to(custom-medium-down){
+  nav{
+    background: lighten($basic-color, 5%);
+    display: none;
+    padding: 0;
+    & > ul.row{
+      background: $basic-color-light;
+      display: block;
+      padding: 0;
+    }
+    & > ul > li{
+      border-bottom: 1px solid transparentize($inverted-color, .9);
+      display: block;
+      float: none;
+      margin: 0;
+      //text-align: left;
+      width: 100% !important;
+      &.active a{
+        border-top-color: transparent;
+        color: $inverted-color;
+        &:before, &:after{
+          border: 1px solid $inverted-color;
+          content: '';
+          display: inline-block;
+          height: 5px;
+
+          margin-top: 5px;
+          margin-right: -5px;
+          -webkit-transform: rotate(-45deg) translate(0, -100%);
+          -moz-transform: rotate(-45deg) translate(0, -100%);
+          -ms-transform: rotate(-45deg) translate(0, -100%);
+          -o-transform: rotate(-45deg) translate(0, -100%);
+          transform: rotate(-45deg) translate(0, -100%);
+          vertical-align: middle;
+          width: 5px;
+        }
+        &:before{
+          border-left-width: 0;
+          border-top-width: 0;
+          margin-right: 10px;
+          position: static;
+        }
+        &:after{
+          border-right-width: 0;
+          border-bottom-width: 0;
+          margin-left: 20px;
+        }
+      }
+    }
+    & > ul > li > a{
+      border-bottom: none;
+      color: $inverted-color;
+      font-weight: 400;
+      line-height: 40px;
+      padding: 5px 20px;
+      width: 100%;
+    }
+  }
+}

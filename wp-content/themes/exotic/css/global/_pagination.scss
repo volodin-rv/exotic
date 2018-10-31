@@ -1,0 +1,94 @@
+.pagination{
+  @include clear-list;
+  display: inline-block;
+  margin-top: 60px;
+  @include respond-to(custom-medium-down){
+    margin-top: 40px;
+  }
+  li{
+    @include align-middle;
+    & > *{
+      border-bottom: none;
+      border-radius: $global-border-radius;
+      color: $basic-color-light;
+      display: block;
+      font-size: 13px;
+      height: 36px;
+      padding: 8px 16px;
+      position: relative;
+      @include respond-to(custom-not-touch){
+        &:hover, &:focus, &:active{
+          background: $first-color;
+          color: $inverted-color;
+        }
+      }
+    }
+    &.active{
+      & > *{
+        background: $first-color;
+        color: $inverted-color;
+        cursor: default;
+        font-weight: 600;
+      }
+    }
+    &.prev, &.next{
+      & > *:before{
+        border: 1px solid $basic-color-light;
+        content: '';
+        display: block;
+        height: 6px;
+        margin-top: 1px;
+        position: absolute;
+        top: 50%;
+        -webkit-transform: rotate(-45deg) translate(0, -100%);
+        -moz-transform: rotate(-45deg) translate(0, -100%);
+        -ms-transform: rotate(-45deg) translate(0, -100%);
+        -o-transform: rotate(-45deg) translate(0, -100%);
+        transform: rotate(-45deg) translate(0, -100%);
+        width: 6px;
+      }
+      & > *{
+        width: 36px;
+        position: relative;
+        @include respond-to(custom-not-touch){
+          &:hover, &:focus, &:active{
+            &:before{
+              border-color: $inverted-color;
+            }
+          }
+        }
+      }
+    }
+    &.prev > *{
+      &:before{
+        border-right-width: 0;
+        border-bottom-width: 0;
+        left: 21px;
+      }
+      @include respond-to(custom-not-touch){
+        &:hover, &:focus, &:active{
+          &:before{
+            border-left-width: 2px;
+            border-top-width: 2px;
+          }
+        }
+      }
+    }
+    &.next > *{
+      &:before{
+        border-top-width: 0;
+        border-left-width: 0;
+        left: 18px;
+      }
+      @include respond-to(custom-not-touch){
+        &:hover, &:focus, &:active{
+          &:before{
+            border-right-width: 2px;
+            border-bottom-width: 2px;
+          }
+        }
+      }
+    }
+
+  }
+}

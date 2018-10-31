@@ -1,0 +1,12 @@
+/*!**/
+/*Theme Name: Exotic Art*/
+/*Author: Roman Volodin*/
+/*Author URI: https://exotic-art.ru/*/
+/*Description: Exotic Art Show*/
+/*Version: 1*/
+/*Text Domain: exoticart*/
+/**!*/
+
+.not-link .cause-txt img {
+   display: none;
+ }

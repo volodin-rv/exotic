@@ -1,0 +1,156 @@
+@import "global";
+
+/*------------------------------------------------------ row -----------------------------------------------------*/
+$row-width: 1240px;
+
+.row, .row-reset-padding{
+  @include clearfix;
+  @include respond-to-custom(0, $row-width){
+    width: 100%;
+  }
+  margin: 0 auto;
+  max-width: $row-width;
+  width: 100%;
+}
+
+.row{
+  padding: 0 10px;
+  position: relative;
+}
+
+/*----------------------------------------------------- columns ---------------------------------------------------*/
+.columns, .column{
+  float: left;
+  padding: 0 10px;
+  margin-bottom: 20px;
+}
+
+.column{
+  &:first-child{
+    padding-left: 0;
+  }
+  &:last-child{
+    padding-right: 0;
+  }
+}
+
+//[class*="column"] + [class*="column"]:last-child{
+//  float: right;
+//}
+//[class*="column"] + [class*="column"].end{
+//  float: left;
+//}
+
+/*---------------------------------------------------- grid -------------------------------------------------------*/
+/* small-12, large-3 ...*/
+
+$total-columns: 12;
+@mixin grid-class($size){
+  @for $i from 1 through $total-columns{
+    .#{$size}-#{$i}{
+      width: percentage($i/$total-columns);
+    }
+  }
+}
+
+
+ul[class*="-grid-"]{
+  @include clearfix;
+  @include clear-list;
+}
+
+@mixin grid-li-class($size){
+  @for $col from 1 through $total-columns{
+    .#{$size}-grid-#{$col}{
+      margin-left: auto;
+      margin-right: auto;
+      max-width: $row-width;
+      padding: 0 10px;
+      width: 100%;
+      & > li{
+        display: block;
+        float: left;
+        margin-bottom: 20px;
+        padding: 0 10px;
+        width: percentage(1/$col);
+      }
+    }
+  }
+}
+
+[class*="-up-show"]{
+  display: none !important;
+}
+@mixin show-blocks-up($size){
+  .#{$size}-up-show{
+    display: block !important;
+  }
+}
+
+[class*="-down-show"]{
+  display: none !important;
+}
+@mixin show-blocks-down($size){
+  .#{$size}-down-show{
+    display: block !important;
+  }
+}
+
+@mixin hide-blocks-down($size){
+  .#{$size}-down-hide{
+    display: none !important;
+  }
+}
+
+body{
+  @include respond-to(custom-min-up){
+    @include grid-class(xsmall);
+    @include grid-li-class(xsmall);
+    @include show-blocks-up(xsmall);
+  }
+  @include respond-to(custom-small-up){
+    @include grid-class(small);
+    @include grid-li-class(small);
+    @include show-blocks-up(small);
+  }
+  @include respond-to(custom-medium-up){
+    @include grid-class(medium);
+    @include grid-li-class(medium);
+    @include show-blocks-up(medium);
+  }
+  @include respond-to(custom-large-up){
+    @include grid-class(large);
+    @include grid-li-class(large);
+    @include show-blocks-up(large);
+  }
+  @include respond-to(custom-xlarge-up){
+    @include grid-class(xlarge);
+  }
+  @include respond-to(custom-not-touch){
+    @include grid-class(not-touch);
+  }
+}
+
+
+body{
+  @include respond-to(custom-xsmall-down){
+    @include hide-blocks-down(xsmall);
+    @include show-blocks-down(xsmall);
+  }
+  @include respond-to(custom-small-down){
+    @include hide-blocks-down(small);
+    @include show-blocks-down(small);
+  }
+  @include respond-to(custom-medium-down){
+    @include hide-blocks-down(medium);
+    @include show-blocks-down(medium);
+  }
+  @include respond-to(custom-large-down){
+    @include hide-blocks-down(large);
+    @include show-blocks-down(large);
+  }
+  @include respond-to(custom-touch){
+    @include hide-blocks-down(touch);
+    @include show-blocks-down(touch);
+  }
+}

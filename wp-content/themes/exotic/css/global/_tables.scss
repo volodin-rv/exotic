@@ -1,0 +1,161 @@
+table{
+  table-layout: fixed;
+  //background: $inverted-color;
+  border-collapse: collapse;
+  border: 1px solid $light-color;
+  width: 100%;
+  th, td{
+    padding: 10px 20px;
+  }
+  tbody, thead{
+    min-width: 100% !important;
+    width: 100%;
+  }
+  th{
+    background: $basic-color-light;
+    color: $inverted-color;
+    font-weight: 500;
+  }
+  tr{
+    &:nth-child(2n){
+      background: transparentize($basic-color, .97);
+    }
+    @include respond-to(custom-not-touch){
+      &:hover, &:focus{
+        background: transparentize($basic-color, .94);
+      }
+    }
+  }
+  &.reset-padding{
+    tr td, tr th{
+      &:first-child{
+        padding-left: 0;
+      }
+      &:last-child{
+        padding-right: 0;
+      }
+    }
+  }
+  .button{
+    margin: 2px 0;
+  }
+  .main-td{
+    width: 40%;
+  }
+  td.main-td{
+    text-align: left;
+  }
+}
+
+table.light-table{
+  border: none;
+  th{
+    background: $light-color;
+    color: $basic-color;
+    font-weight: 600;
+  }
+}
+
+/*----------------------------------------------------- cleaned -----------------------------------------------------*/
+table.small{
+  border: none;
+  box-shadow: none;
+  table-layout: auto;
+  text-align: left;
+  th{
+    background: transparent;
+    color: $basic-color;
+  }
+  th, td{
+    color: $basic-color;
+    padding: 10px 40px 10px 0;
+    vertical-align: top;
+    &:last-child{
+      padding-right: 0;
+    }
+  }
+  tr{
+    background: transparent !important;
+  }
+  thead{
+    th{
+      font-size: 1.125rem;
+      padding-bottom: .4rem;
+      padding-top: .8rem;
+    }
+  }
+  &.centered{
+    max-width: 50%;
+    width: auto;
+    @include respond-to(custom-medium-down){
+      max-width: 100%;
+    }
+  }
+  @include respond-to(custom-xsmall-down){
+    th, td{
+      display: block;
+    }
+    th{
+      padding-bottom: 0;
+      padding-top: 10px;
+    }
+  }
+}
+
+.overflow-td{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.table-confirmation.small{
+  margin: 0 auto;
+  width: auto;
+  td, th{
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+}
+
+
+table.cleaned{
+  border: none;
+  tr{
+    text-align: center;
+    th{
+      background: $inverted-color;
+      color: $basic-color-light;
+      font-size: 13px;
+    }
+    border-bottom: 1px solid transparentize($light-color, .3);
+    &, &:nth-child(2n){
+      @include respond-to(custom-not-touch){
+        &:hover, &:focus{
+          background: $inverted-color;
+        }
+      }
+    }
+    &:nth-child(2n){
+      background: transparent;
+    }
+    &:last-child{
+      border-bottom: none;
+    }
+  }
+  @include respond-to(custom-small-down){
+    tr, td{
+      display: block;
+      text-align: left;
+    }
+    td{
+      padding: 5px 0 !important;
+    }
+    tr{
+      border-bottom-color: $basic-color;
+      padding: 10px 0;
+    }
+    th{
+      display: none;
+    }
+  }
+}

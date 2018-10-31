@@ -1,0 +1,202 @@
+$border-radius: $global-border-radius;
+$background: $inverted-color;
+$color: $basic-color;
+$background-hover: $first-color-light;
+$color-hover: $inverted-color;
+$nav-color: $color;
+$nav-color-hover: $color-hover;
+$not-in-month: transparentize($basic-color-light, .5);
+$not-in-month-hover: transparentize($basic-color-light, .3);
+$disabled: $light-color;
+$selected: $inverted-color;
+$selected-background: $first-color;
+$not-in-month-selected-background: $first-color;
+$day-of-week: $not-in-month-hover;
+$today-background: $first-color-light;
+$today-color: $inverted-color;
+
+
+.pickmeup {
+	background      : $background;
+	border-radius   : $border-radius;
+	border: 1px solid $light-color;
+	font-size: 14px;
+	-moz-box-sizing : content-box;
+	box-sizing      : content-box;
+	display         : inline-block;
+	position        : absolute;
+	touch-action    : manipulation;
+	z-index: 200;
+
+	* {
+		-moz-box-sizing : border-box;
+		box-sizing      : border-box;
+	}
+
+	&.pmu-flat {
+		position : relative;
+	}
+
+	&.pmu-hidden {
+		display : none;
+	}
+
+	.pmu-instance {
+		display    : inline-block;
+		height     : 13.8em;
+		padding    : .5em;
+		text-align : center;
+		width      : 15em;
+
+		.pmu-button {
+			color           : $color;
+			cursor          : pointer;
+			outline         : none;
+			text-decoration : none;
+			padding: 5px;
+		}
+
+		.pmu-today {
+			background : $today-background;
+			color      : $today-color;
+		}
+
+		.pmu-button:hover {
+			background : $background-hover;
+			color      : $color-hover;
+		}
+
+		.pmu-not-in-month {
+			color : $not-in-month;
+		}
+
+		.pmu-disabled,
+		.pmu-disabled:hover {
+			color  : $disabled;
+			cursor : default;
+		}
+
+		.pmu-selected {
+			background : $selected-background;
+			color      : $selected;
+		}
+
+		.pmu-not-in-month.pmu-selected {
+			background : $not-in-month-selected-background;
+		}
+
+		nav {
+			@include flexbox;
+			@include space-between;
+			color       : $nav-color;
+			display     : -ms-flexbox;
+			display     : -webkit-flex;
+			display     : flex;
+			line-height : 2em;
+			padding: 0 3px;
+
+			*:first-child :hover {
+				color : $nav-color-hover;
+			}
+
+			.pmu-prev,
+			.pmu-next {
+				display: none;
+				font-size: 0;
+				height: 28px;
+				position: relative;
+				width: 1em;
+				&:after{
+					border: 1px solid $basic-color-light;
+					content: '';
+					display: block;
+					height: 8px;
+					margin-top: 0;
+					position: absolute;
+					top: 50%;
+					-webkit-transform: rotate(-45deg) translate(0, -100%);
+					-moz-transform: rotate(-45deg) translate(0, -100%);
+					-ms-transform: rotate(-45deg) translate(0, -100%);
+					-o-transform: rotate(-45deg) translate(0, -100%);
+					transform: rotate(-45deg) translate(0, -100%);
+					width: 8px;
+				}
+				@include respond-to(custom-not-touch){
+					&:hover, &:active{
+						&:after{
+							border-color: $inverted-color;
+						}
+					}
+				}
+			}
+
+			.pmu-prev:after{
+				border-right-width: 0;
+				border-bottom-width: 0;
+				left: 10px;
+			}
+			.pmu-next:after{
+				border-left-width: 0;
+				border-top-width: 0;
+				left: 4px;
+			}
+
+			.pmu-month {
+				padding: 0;
+				width : 14em;
+			}
+		}
+
+		.pmu-years,
+		.pmu-months {
+			* {
+				display     : inline-block;
+				line-height : 3.6em;
+				width       : 3.5em;
+			}
+		}
+
+		.pmu-day-of-week {
+			color  : $not-in-month;
+			cursor : default;
+			font-size: 12px;
+			padding: 0;
+		}
+
+
+		.pmu-day-of-week,
+		.pmu-days {
+			* {
+				display     : inline-block;
+				width       : 2em;
+			}
+		}
+
+		.pmu-day-of-week * {
+			line-height : 1.8em;
+		}
+	}
+
+	.pmu-instance:first-child .pmu-prev,
+	.pmu-instance:last-child .pmu-next {
+		display : block;
+	}
+
+	.pmu-instance:first-child,
+	.pmu-instance:last-child {
+		.pmu-month {
+			width : 13em;
+		}
+	}
+
+	.pmu-instance:first-child:last-child .pmu-month {
+		width : 12em;
+	}
+
+	&:not(.pmu-view-days) .pmu-days,
+	&:not(.pmu-view-days) .pmu-day-of-week,
+	&:not(.pmu-view-months) .pmu-months,
+	&:not(.pmu-view-years) .pmu-years {
+		display : none;
+	}
+}

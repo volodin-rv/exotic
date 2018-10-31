@@ -1,0 +1,21 @@
+@mixin icon($icon-x, $icon-y, $icon-height, $icon-width){
+  background: url(../img/icons.png) no-repeat $icon-x $icon-y;
+  background-size: 280px;
+  display: inline-block;
+  height: $icon-height;
+  width: $icon-width;
+  vertical-align: middle;
+}
+@mixin icon-before($icon-before-x, $icon-before-y, $icon-before-height, $icon-before-width){
+  &:before{
+    background: url(../img/icons.png) no-repeat $icon-before-x $icon-before-y;
+    background-size: 280px;
+    content: '';
+    display: inline-block;
+    height: $icon-before-height;
+    margin-right: 5px;
+    margin-top: -2px;
+    vertical-align: middle;
+    width: $icon-before-width;
+  }
+}

@@ -1,0 +1,111 @@
+.dropdown{
+  background: $inverted-color;
+  display: none;
+  border: 1px solid $light-color;
+  box-shadow: 0 0 10px transparentize($basic-color, .8);
+  padding: 20px;
+  position: absolute;
+  margin: 0;
+  min-width: 250px;
+  width: auto;
+  z-index: 1090;
+  &.left-stick{
+    left: 0;
+  }
+  &.right-stick{
+    right: 0;
+  }
+}
+
+
+.with-arrow{
+  cursor: pointer;
+  &:after{
+    border: 2px solid $basic-color;
+    border-right-width: 0;
+    border-top-width: 0;
+    content: '';
+    display: inline-block;
+    height: 7px;
+    margin-left: 20px;
+    margin-top: 6px;
+    margin-right: -5px;
+    -webkit-transform: rotate(-45deg) translate(0, -100%);
+    -moz-transform: rotate(-45deg) translate(0, -100%);
+    -ms-transform: rotate(-45deg) translate(0, -100%);
+    -o-transform: rotate(-45deg) translate(0, -100%);
+    transform: rotate(-45deg) translate(0, -100%);
+    vertical-align: middle;
+    width: 7px;
+  }
+  &.active:after{
+    border-right-width: 2px;
+    border-top-width: 2px;
+    border-left-width: 0;
+    border-bottom-width: 0;
+    margin-top: 15px;
+  }
+  &.small{
+    &:after{
+      border-left-width: 1px;
+      border-bottom-width: 1px;
+      height: 5px;
+      margin-top: 5px;
+      margin-left: 10px;
+      width: 5px;
+    }
+    &.active:after{
+      border-right-width: 1px;
+      border-top-width: 1px;
+      border-left-width: 0;
+      border-bottom-width: 0;
+      margin-top: 12px;
+    }
+  }
+}
+
+
+.with-arrow-full{
+  display: block;
+  padding-right: 22px;
+  position: relative;
+  width: 100%;
+  &:after{
+    @include transition;
+    @include transform-translate(0, -50%);
+    @include icon(-240px, 0, 7px, 12px);
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+  }
+  &.active:after{
+    @include transform-rotate(-180deg);
+    margin-top: -3.5px;
+  }
+}
+
+.with-arrow-inline{
+  &:after{
+    @include align-middle;
+    @include icon(-240px, 0, 7px, 12px);
+    content: '';
+    margin-left: 10px;
+  }
+  &.active:after{
+    @include transform-rotate(-180deg);
+    margin-top: -2px;
+  }
+  &.button:after{
+    background-position: -240px -40px;
+  }
+}
+
+[with-content], [with-content-small], [with-dropdown]{
+  @include user-select-none;
+  cursor: pointer;
+}
+
+.dropdown, [content], [content-small]{
+  display: none;
+}

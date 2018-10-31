@@ -1,0 +1,127 @@
+.accordion-item{
+  &:first-child{
+    margin-top: 0;
+    border-radius: $global-border-radius $global-border-radius 0 0;
+  }
+  &:last-child{
+    &, .accordion-content{
+      border-radius: 0 0 $global-border-radius $global-border-radius;
+    }
+  }
+  margin-top: -1px;
+  overflow: hidden;
+  position:relative;
+  @include respond-to(custom-not-touch){
+    &:hover, &:focus{
+      z-index: 5;
+    }
+  }
+  &.open{
+    .accordion-content{
+      @include transition;
+      display: block;
+    }
+  }
+  &.active{
+    z-index: 5;
+  }
+  &.open, &.active{
+    .accordion-title {
+      background: $basic-color-light;
+      border-color: $basic-color-light;
+      color: $inverted-color;
+      &.with-arrow:after {
+        border: 1px solid $inverted-color;
+        border-left-width: 0;
+        border-bottom-width: 0;
+        margin-top: 5px;
+      }
+    }
+  }
+  .sub-title{
+    background: transparentize($light-color, .5);
+    margin: 0 -20px 5px;
+    padding: 5px 20px;
+  }
+  &.open .accordion-content{
+    height: auto;
+    max-height: 999px;
+  }
+}
+
+.accordion-title{
+  @include transition($ease: linear);
+  border: 1px solid $light-color;
+  color: $basic-color-light;
+  cursor:pointer;
+  margin-bottom: 0;
+  padding: 20px;
+  position: relative;
+  @include respond-to(custom-not-touch){
+    &:hover, &:focus{
+      background: transparentize($basic-color-light, .5);
+      border-color: transparentize($basic-color-light, .5);
+      color: $inverted-color;
+      &.with-arrow:after{
+        border-color: $inverted-color;
+      }
+    }
+  }
+  &.with-arrow{
+    padding-right: 46px;
+  }
+  &.with-arrow:after{
+    border: 1px solid $basic-color-light;
+    border-right-width: 0;
+    border-top-width: 0;
+    content: '';
+    display: block;
+    height: 8px;
+    margin-top: 0;
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    -webkit-transform: rotate(-45deg) translate(0, -100%);
+    -moz-transform: rotate(-45deg) translate(0, -100%);
+    -ms-transform: rotate(-45deg) translate(0, -100%);
+    -o-transform: rotate(-45deg) translate(0, -100%);
+    transform: rotate(-45deg) translate(0, -100%);
+    width: 8px;
+  }
+}
+
+.accordion-content{
+  border: 1px solid $light-color;
+  border-top: none;
+  display: none;
+  overflow: hidden;
+  padding: 20px;
+}
+
+
+
+
+
+
+/* картинки внутри аккордеона */
+.accordion .accordion-content img {
+  height: auto;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+}
+/* полноразмерная картинка */
+.large-img {
+  width: 100%;
+  margin-bottom: 10px;
+}
+/* миниатюра слева */
+.img-left {
+  width: 25%;
+  float:left;
+  margin:5px 15px 5px 0;
+}
+/* миниатюра справа */
+.img-right {
+  width: 25%;
+  float:right;
+  margin:5px 0 5px 15px;
+}
