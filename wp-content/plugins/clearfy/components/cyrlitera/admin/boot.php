@@ -12,6 +12,27 @@
 	}
 
 	/**
+	 * Когда в CLearfy пользователь выполняет быструю настройку "ONE CLICK SEO OPTIMIZATION",
+	 * мы включаем транслитерацию и преобразовываем слаги для уже существующих страниц, терминов
+	 *
+	 * @param string $mode_name - имя режима быстрой настройки
+	 */
+	add_action('wbcr_clearfy_configurated_quick_mode', function ($mode_name) {
+		if( $mode_name == 'seo_optimize' ) {
+			$use_transliterations = WCTR_Plugin::app()->getPopulateOption('use_transliteration');
+			$transliterate_existing_slugs = WCTR_Plugin::app()->getPopulateOption('transliterate_existing_slugs');
+
+			if( !$use_transliterations || $transliterate_existing_slugs ) {
+				return;
+			}
+
+			WCTR_Helper::convertExistingSlugs();
+
+			WCTR_Plugin::app()->updatePopulateOption('transliterate_existing_slugs', 1);
+		}
+	});
+
+	/**
 	 * @return array
 	 */
 	function wbcr_cyrlitera_install_conflict_plugins()
@@ -70,46 +91,36 @@
 	add_filter('wbcr_clr_seo_page_warnings', 'wbcr_cyrlitera_get_conflict_notices_error');
 
 	/**
-	 * Ошибки совместимости с похожими плагинами
+	 * Печатает ошибки совместимости с похожими плагинами
 	 */
-	function wbcr_cyrlitera_admin_conflict_notices_error()
+	function wbcr_cyrlitera_admin_conflict_notices_error($notices, $plugin_name)
 	{
-		$notices = wbcr_cyrlitera_get_conflict_notices_error();
-
-		if( empty($notices) ) {
-			return;
+		if( $plugin_name != WCTR_Plugin::app()->getPluginName() ) {
+			return $notices;
 		}
 
-		?>
-		<div id="wbcr-cyrlitera-conflict-error" class="notice notice-error is-dismissible">
-			<?php foreach((array)$notices as $notice): ?>
-				<p>
-					<?= $notice ?>
-				</p>
-			<?php endforeach; ?>
-		</div>
-	<?php
-	}
+		$warnings = wbcr_cyrlitera_get_conflict_notices_error();
 
-	add_action('admin_notices', 'wbcr_cyrlitera_admin_conflict_notices_error');
-
-	/**
-	 * Виджет отзывов
-	 *
-	 * @param string $page_url
-	 * @param string $plugin_name
-	 * @return string
-	 */
-	function wbcr_cyrlitera_rating_widget_url($page_url, $plugin_name)
-	{
-		if( $plugin_name == WCTR_Plugin::app()->getPluginName() ) {
-			return 'https://goo.gl/ecaj2V';
+		if( empty($warnings) ) {
+			return $notices;
+		}
+		$notice_text = '';
+		foreach((array)$warnings as $warning) {
+			$notice_text .= '<p>' . $warning . '</p>';
 		}
 
-		return $page_url;
+		$notices[] = array(
+			'id' => 'cyrlitera_plugin_compatibility',
+			'type' => 'error',
+			'dismissible' => true,
+			'dismiss_expires' => 0,
+			'text' => $notice_text
+		);
+
+		return $notices;
 	}
 
-	add_filter('wbcr_factory_pages_401_imppage_rating_widget_url', 'wbcr_cyrlitera_rating_widget_url', 10, 2);
+	add_action('wbcr_factory_notices_407_list', 'wbcr_cyrlitera_admin_conflict_notices_error', 10, 2);
 
 	function wbcr_cyrlitera_group_options($options)
 	{
@@ -131,6 +142,12 @@
 		$options[] = array(
 			'name' => 'use_force_transliteration',
 			'title' => __('Force transliteration', 'cyrlitera'),
+			'tags' => array()
+		);
+
+		$options[] = array(
+			'name' => 'dont_use_transliteration_on_frontend',
+			'title' => __('Don\'t use transliteration in frontend', 'cyrlitera'),
 			'tags' => array()
 		);
 
@@ -166,7 +183,16 @@
 	function wbcr_cyrlitera_set_plugin_meta($links, $file)
 	{
 		if( $file == WCTR_PLUGIN_BASE ) {
-			$links[] = '<a href="https://goo.gl/TcMcS4" style="color: #FF5722;font-weight: bold;" target="_blank">' . __('Get ultimate plugin free', 'cyrlitera') . '</a>';
+
+			$url = 'https://clearfy.pro';
+
+			if( get_locale() == 'ru_RU' ) {
+				$url = 'https://ru.clearfy.pro';
+			}
+
+			$url .= '?utm_source=wordpress.org&utm_campaign=' . WCTR_Plugin::app()->getPluginName();
+
+			$links[] = '<a href="' . $url . '" style="color: #FF5722;font-weight: bold;" target="_blank">' . __('Get ultimate plugin free', 'cyrlitera') . '</a>';
 		}
 
 		return $links;
@@ -175,6 +201,24 @@
 	if( !defined('LOADING_CYRLITERA_AS_ADDON') ) {
 		add_filter('plugin_row_meta', 'wbcr_cyrlitera_set_plugin_meta', 10, 2);
 	}
+
+	/**
+	 * Виджет отзывов
+	 *
+	 * @param string $page_url
+	 * @param string $plugin_name
+	 * @return string
+	 */
+	function wbcr_cyrlitera_rating_widget_url($page_url, $plugin_name)
+	{
+		if( !defined('LOADING_CYRLITERA_AS_ADDON') && ($plugin_name == WCTR_Plugin::app()->getPluginName()) ) {
+			return 'https://goo.gl/ecaj2V';
+		}
+
+		return $page_url;
+	}
+
+	add_filter('wbcr_factory_pages_410_imppage_rating_widget_url', 'wbcr_cyrlitera_rating_widget_url', 10, 2);
 
 
 

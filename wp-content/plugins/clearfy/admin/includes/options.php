@@ -33,46 +33,6 @@
 			'title' => __('Exclude pages from Disable Google Maps filter', 'clearfy'),
 			'tags' => array()
 		),
-		array(
-			'name' => 'ga_cache',
-			'title' => __('Google analytic cache', 'clearfy'),
-			'tags' => array()
-		),
-		array(
-			'name' => 'ga_tracking_id',
-			'title' => __('Google analytic Code', 'clearfy'),
-			'tags' => array()
-		),
-		array(
-			'name' => 'ga_adjusted_bounce_rate',
-			'title' => __('Use adjusted bounce rate?', 'clearfy'),
-			'tags' => array()
-		),
-		array(
-			'name' => 'ga_enqueue_order',
-			'title' => __('Change enqueue order?', 'clearfy'),
-			'tags' => array()
-		),
-		array(
-			'name' => 'ga_caos_disable_display_features',
-			'title' => __('Disable all display features functionality?', 'clearfy'),
-			'tags' => array()
-		),
-		array(
-			'name' => 'ga_anonymize_ip',
-			'title' => __('Use Anonymize IP? (Required by law for some countries)', 'clearfy'),
-			'tags' => array()
-		),
-		array(
-			'name' => 'ga_track_admin',
-			'title' => __('Track logged in Administrators?', 'clearfy'),
-			'tags' => array()
-		),
-		array(
-			'name' => 'ga_caos_remove_wp_cron',
-			'title' => __('Remove script from wp-cron?', 'clearfy'),
-			'tags' => array()
-		),
 		/** ------------------------ End google services ----------------------------- */
 		array(
 			'name' => 'disable_google_maps',
@@ -93,7 +53,7 @@
 		array(
 			'name' => 'disable_dashicons',
 			'title' => __('Disable Dashicons', 'clearfy'),
-			'tags' => array()
+			'tags' => array('hide_my_wp')
 		),
 		array(
 			'name' => 'disable_gravatars',
@@ -108,66 +68,64 @@
 		array(
 			'name' => 'disable_emoji',
 			'title' => __('Disable Emojis', 'clearfy'),
-			'tags' => array('recommended', 'clear_code')
+			'tags' => array('clear_code', 'hide_my_wp')
 		),
 		/*array(
 			'name' => 'remove_dns_prefetch',
 			'title' => __('Remove dns-prefetch', 'clearfy'),
-			'tags' => array('recommended', 'clear_code')
+			'tags' => array('clear_code')
 		),*/
 
 		array(
 			'name' => 'remove_rsd_link',
 			'title' => __('Remove RSD Link', 'clearfy'),
-			'tags' => array('recommended', 'clear_code')
+			'tags' => array('clear_code', 'hide_my_wp')
 		),
 		array(
 			'name' => 'remove_wlw_link',
 			'title' => __('Remove wlwmanifest Link', 'clearfy'),
-			'tags' => array('recommended', 'clear_code')
+			'tags' => array('clear_code', 'hide_my_wp')
 		),
 		array(
 			'name' => 'remove_shortlink_link',
 			'title' => __('Remove Shortlink', 'clearfy'),
-			'tags' => array('recommended', 'clear_code')
+			'tags' => array('clear_code', 'hide_my_wp')
 		),
 		array(
 			'name' => 'remove_adjacent_posts_link',
 			'title' => __('Remove links to previous, next post', 'clearfy'),
-			'tags' => array('recommended', 'clear_code')
+			'tags' => array('clear_code', 'hide_my_wp')
 		),
 		array(
 			'name' => 'remove_recent_comments_style',
 			'title' => __('Remove .recentcomments styles', 'clearfy'),
-			'tags' => array('recommended', 'clear_code')
+			'tags' => array('clear_code', 'hide_my_wp')
 		),
 		/** ------------------------ End Performance page ----------------------------- */
 		array(
 			'name' => 'content_image_auto_alt',
 			'title' => __('Automatically set the alt attribute', 'clearfy'),
-			'tags' => array('recommended', 'seo_optimize')
+			'tags' => array('seo_optimize')
 		),
 		array(
 			'name' => 'set_last_modified_headers',
 			'title' => __('Automatically insert the Last Modified header', 'clearfy'),
-			'tags' => array('recommended', 'seo_optimize')
+			'tags' => array('seo_optimize')
 		),
 		array(
 			'name' => 'if_modified_since_headers',
 			'title' => __('Return an If-Modified-Since responce', 'clearfy'),
-			'tags' => array('recommended', 'seo_optimize')
+			'tags' => array('seo_optimize')
 		),
 		array(
 			'name' => 'remove_last_item_breadcrumb_yoast',
 			'title' => __('Remove duplicate names in breadcrumbs WP SEO by Yoast', 'clearfy'),
-			'tags' => array('recommended', 'seo_optimize')
+			'tags' => array('seo_optimize')
 		),
 		array(
 			'name' => 'yoast_remove_image_from_xml_sitemap',
 			'title' => sprintf(__('Remove the tag %s from XML site map', 'clearfy'), 'image:image'),
-			'tags' => get_locale() == 'ru_RU'
-				? array('recommended', 'clear_code')
-				: array()
+			'tags' => get_locale() == 'ru_RU' ? array('clear_code') : array()
 		),
 		array(
 			'name' => 'yoast_remove_json_ld_search',
@@ -182,17 +140,17 @@
 		array(
 			'name' => 'yoast_remove_head_comment',
 			'title' => sprintf(__('Remove comment from %s section', 'clearfy'), 'head'),
-			'tags' => array('recommended', 'clear_code')
+			'tags' => array('clear_code')
 		),
 		array(
 			'name' => 'redirect_archives_date',
 			'title' => __('Remove archives date', 'clearfy'),
-			'tags' => array('recommended', 'seo_optimize')
+			'tags' => array('seo_optimize')
 		),
 		array(
 			'name' => 'redirect_archives_author',
 			'title' => __('Remove author archives ', 'clearfy'),
-			'tags' => array('recommended', 'seo_optimize')
+			'tags' => array('seo_optimize')
 		),
 		array(
 			'name' => 'redirect_archives_tag',
@@ -202,42 +160,42 @@
 		array(
 			'name' => 'attachment_pages_redirect',
 			'title' => __('Remove attachment pages', 'clearfy'),
-			'tags' => array('recommended', 'seo_optimize')
+			'tags' => array('seo_optimize')
 		),
 		array(
 			'name' => 'remove_single_pagination_duplicate',
 			'title' => __('Remove post pagination', 'clearfy'),
-			'tags' => array('recommended', 'seo_optimize')
+			'tags' => array('recommended')
 		),
 		array(
 			'name' => 'remove_replytocom',
 			'title' => __('Remove ?replytocom', 'clearfy'),
-			'tags' => array('recommended', 'seo_optimize')
+			'tags' => array('seo_optimize')
 		),
 		array(
 			'name' => 'remove_meta_generator',
 			'title' => __('Remove meta generator', 'clearfy'),
-			'tags' => array('recommended', 'clear_code', 'defence')
+			'tags' => array('clear_code', 'defence', 'hide_my_wp')
 		),
 		array(
 			'name' => 'protect_author_get',
 			'title' => __('Hide author login', 'clearfy'),
-			'tags' => array('recommended', 'defence')
+			'tags' => array('defence', 'hide_my_wp')
 		),
 		array(
 			'name' => 'change_login_errors',
-			'title' => __('Hide errors when logging into the site', 'clearfy'),
-			'tags' => array('recommended', 'defence')
+			'title' => __('Hide errors when logging into the site', 'clearfy', 'hide_my_wp'),
+			'tags' => array('defence', 'hide_my_wp')
 		),
 		array(
 			'name' => 'remove_style_version',
-			'title' => __('Remove Version from Stylesheet', 'clearfy'),
-			'tags' => array('recommended', 'clear_code', 'defence')
+			'title' => __('Remove Version from Stylesheet', 'clearfy', 'hide_my_wp'),
+			'tags' => array('clear_code', 'defence', 'hide_my_wp')
 		),
 		array(
 			'name' => 'remove_js_version',
 			'title' => __('Remove Version from Script', 'clearfy'),
-			'tags' => array('recommended', 'clear_code', 'defence')
+			'tags' => array('clear_code', 'defence', 'hide_my_wp')
 		),
 		array(
 			'name' => 'remove_unneeded_widget_page',
@@ -340,21 +298,15 @@
 			'title' => __('Removes links to wordpress.org site from the admin bar', 'clearfy'),
 			'tags' => array()
 		),
-		array('name' => 'html_minify', 'title' => __('HTML minify', 'clearfy'), 'tags' => array()),
-		array(
-			'name' => 'redirect_from_http_to_https',
-			'title' => __('Redirect Http to Https', 'clearfy'),
-			'tags' => array()
-		),
 		array(
 			'name' => 'remove_style_version',
 			'title' => __('Remove Version from Stylesheet', 'clearfy'),
-			'tags' => array()
+			'tags' => array('hide_my_wp')
 		),
 		array(
 			'name' => 'remove_js_version',
 			'title' => __('Remove Version from Script', 'clearfy'),
-			'tags' => array()
+			'tags' => array('hide_my_wp')
 		),
 		array(
 			'name' => 'remove_version_exclude',
@@ -426,4 +378,21 @@
 			'title' => __('Remove html comments', 'clearfy'),
 			'tags' => array()
 		),
+		array(
+			'name' => 'deactive_preinstall_components',
+			'title' => __('Deactivate preinstall components', 'clearfy'),
+			'tags' => array()
+		),
+		array(
+			'name' => 'freemius_activated_addons',
+			'title' => __('Freemius activated addons', 'clearfy'),
+			'tags' => array()
+		),
+		/** ------------------------ Clearfy settings ----------------------------- */
+		array(
+			'name' => 'disable_clearfy_extra_menu',
+			'title' => __('Disable menu in adminbar', 'clearfy'),
+			'tags' => array()
+		)
+
 	));

@@ -4,7 +4,7 @@
 	 * Activator for the cyrlitera
 	 * @author Webcraftic <wordpress.webraftic@gmail.com>
 	 * @copyright (c) 09.03.2018, Webcraftic
-	 * @see Wbcr_Factory400_Activator
+	 * @see Wbcr_Factory409_Activator
 	 * @version 1.0
 	 */
 
@@ -13,7 +13,7 @@
 		exit;
 	}
 
-	class WCTR_Activation extends Wbcr_Factory400_Activator {
+	class WCTR_Activation extends Wbcr_Factory409_Activator {
 
 		/**
 		 * Runs activation actions.
@@ -22,8 +22,8 @@
 		 */
 		public function activate()
 		{
-			WCTR_Plugin::app()->updateOption('use_transliteration', 1);
-			WCTR_Plugin::app()->updateOption('use_transliteration_filename', 1);
-			WCTR_Plugin::app()->updateOption('filename_to_lowercase', 1);
+			WCTR_Plugin::app()->updatePopulateOption('use_transliteration', 1);
+			WCTR_Plugin::app()->updatePopulateOption('use_transliteration_filename', 1);
+			WCTR_Plugin::app()->updatePopulateOption('filename_to_lowercase', 1);
 		}
 	}

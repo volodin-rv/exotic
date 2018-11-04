@@ -10,13 +10,13 @@
 		exit;
 	}
 	
-	class WCL_DoublePagesPage extends WCL_Page {
+	class WCL_DoublePagesPage extends Wbcr_FactoryClearfy206_PageBase {
 		
 		/**
 		 * The id of the page in the admin menu.
 		 *
 		 * Mainly used to navigate between pages.
-		 * @see FactoryPages401_AdminPage
+		 * @see FactoryPages410_AdminPage
 		 *
 		 * @since 1.0.0
 		 * @var string
@@ -29,6 +29,8 @@
 		
 		public $page_menu_position = 16;
 		
+		public $available_for_multisite = true;
+		
 		/**
 		 * @param WCL_Plugin $plugin
 		 */
@@ -40,21 +42,7 @@
 			
 			$this->plugin = $plugin;
 		}
-		
-		/**
-		 * Shows the description above the options.
-		 *
-		 * @since 1.0.0
-		 * @return void
-		 */
-		/*public function _showHeader()
-		{
-			?>
-			<div class="wbcr-clearfy-header">
-				<?php _e('This page contains settings for setting up duplicate pages.', 'clearfy') ?>
-			</div>
-		<?php
-		}*/
+
 		
 		/**
 		 * Permalinks options.
@@ -62,7 +50,7 @@
 		 * @since 1.0.0
 		 * @return mixed[]
 		 */
-		public function getOptions()
+		public function getPageOptions()
 		{
 			$options = array();
 			
@@ -131,7 +119,7 @@
 				'way' => 'buttons',
 				'name' => 'remove_single_pagination_duplicate',
 				'title' => __('Remove post pagination', 'clearfy'),
-				'layout' => array('hint-type' => 'icon'),
+				'layout' => array('hint-type' => 'icon', 'hint-icon-color' => 'grey'),
 				'hint' => sprintf(__('In WordPress, any post can be divided into parts (pages), each part will have its own address. But this functionality is rarely used, but it can create trouble for you. For example, you can add a number to the address of any entry of your blog, %s - the post itself will open, which will be a duplicate. You can substitute any number.', 'clearfy'), '/privet-mir/1/') . '<br><b>Clearfy: </b>' . sprintf(__('Removes the pagination from the post and puts a redirect. Example: %s', 'clearfy'), '/post-name/number'),
 				'default' => false
 			);

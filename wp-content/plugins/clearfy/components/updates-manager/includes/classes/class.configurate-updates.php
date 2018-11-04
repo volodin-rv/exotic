@@ -12,20 +12,21 @@
 		exit;
 	}
 
-	class WbcrUpm_ConfigUpdates extends Wbcr_FactoryClearfy200_Configurate {
+	require_once WUPM_PLUGIN_DIR . '/admin/includes/class.plugin-filters.php';
+
+	class WUPM_ConfigUpdates extends Wbcr_FactoryClearfy206_Configurate {
 
 		public function registerActionsAndFilters()
 		{
 			/**
 			 * Plugin updates
 			 */
-			$plugins_update = $this->getOption('plugin_updates');
+			$plugins_update = $this->getPopulateOption('plugin_updates');
 
-			switch( $this->getOption('plugin_updates') ) {
+			switch( $this->getPopulateOption('plugin_updates') ) {
 				case 'disable_plugin_updates':
-					add_filter('site_transient_update_plugins', array($this, 'lastCheckedNow'), 50);
-					add_action('admin_init', array($this, 'adminInitForPlugins'));
-					add_filter('auto_update_plugin', '__return_false');
+					add_filter('http_request_args', array($this, 'httpRequestArgsRemovePlugins'), 5, 2);
+					add_filter('site_transient_update_plugins', array($this, 'disablePluginNotifications'), 50);
 					break;
 				case 'enable_plugin_auto_updates':
 					add_filter('auto_update_plugin', array($this, 'pluginsAutoUpdate'), 50, 2);
@@ -40,7 +41,7 @@
 			/**
 			 * Theme updates
 			 */
-			switch( $this->getOption('theme_updates') ) {
+			switch( $this->getPopulateOption('theme_updates') ) {
 				case 'disable_theme_updates':
 					add_filter('site_transient_update_themes', array($this, 'lastCheckedNow'), 50);
 					add_action('admin_init', array($this, 'adminInitForThemes'));
@@ -55,7 +56,7 @@
 			 * disable wp default translation update
 			 */
 
-			if( $this->getOption('auto_tran_update') ) {
+			if( $this->getPopulateOption('auto_tran_update') ) {
 				add_filter('auto_update_translation', '__return_false', 1);
 			}
 
@@ -63,7 +64,7 @@
 			 * control WP Auto core update
 			 */
 
-			switch( $this->getOption('wp_update_core') ) {
+			switch( $this->getPopulateOption('wp_update_core') ) {
 				case 'disable_core_updates':
 					$this->disableAllCoreUpdates();
 					break;
@@ -86,14 +87,14 @@
 			/**
 			 * disable wp default translation update
 			 */
-			if( $this->getOption('enable_update_vcs') ) {
+			if( $this->getPopulateOption('enable_update_vcs') ) {
 				add_filter('automatic_updates_is_vcs_checkout', '__return_false', 1);
 			}
 
 			/**
 			 * disable updates nags for all users except admin
 			 */
-			if( $this->getOption('updates_nags_only_for_admin') && !current_user_can('update_core') ) {
+			if( $this->getPopulateOption('updates_nags_only_for_admin') && !current_user_can('update_core') ) {
 				remove_action('admin_notices', 'update_nag', 3);
 			}
 
@@ -107,30 +108,24 @@
 		 */
 		public function filterCronEvents($event)
 		{
-			$core_updates = $this->getOption('wp_update_core') == 'disable_core_updates';
-			$plugins_updates = $this->getOption('plugin_updates') == 'disable_plugin_updates';
-			$themes_updates = $this->getOption('theme_updates') == 'disable_theme_updates';
+			$core_updates = $this->getPopulateOption('wp_update_core') == 'disable_core_updates';
+			//$plugins_updates = $this->getPopulateOption('plugin_updates') == 'disable_plugin_updates';
+			$themes_updates = $this->getPopulateOption('theme_updates') == 'disable_theme_updates';
+
+			if( !is_object($event) || empty($event->hook) ) {
+				return $event;
+			}
 
 			switch( $event->hook ) {
 				case 'wp_version_check':
-					$event = $core_updates
-						? false
-						: $event;
+					$event = $core_updates ? false : $event;
 					break;
-				case 'wp_update_plugins':
-					$event = $plugins_updates
-						? false
-						: $event;
-					break;
+
 				case 'wp_update_themes':
-					$event = $themes_updates
-						? false
-						: $event;
+					$event = $themes_updates ? false : $event;
 					break;
 				case 'wp_maybe_auto_update':
-					$event = $core_updates
-						? false
-						: $event;
+					$event = $core_updates ? false : $event;
 					break;
 			}
 
@@ -146,17 +141,14 @@
 		 */
 		public function pluginsAutoUpdate($update, $item)
 		{
-			$filters = $this->getOption('plugins_update_filters');
-
 			$slug_parts = explode('/', $item->plugin);
 			$actual_slug = array_shift($slug_parts);
 
-			if( !empty($filters) ) {
-				if( isset($filters['disable_auto_updates']) && isset($filters['disable_auto_updates'][$actual_slug]) ) {
-					return false;
-				}
+			$pluginFilters = new WUPM_PluginFilters($this->plugin);
+			$filters = $pluginFilters->getFilters(array($actual_slug));
 
-				if( isset($filters['disable_updates']) && isset($filters['disable_updates'][$actual_slug]) ) {
+			if( !empty($filters) ) {
+				if( isset($filters['disable_auto_updates'][$actual_slug]) and $filters['disable_auto_updates'][$actual_slug] ) {
 					return false;
 				}
 			}
@@ -176,15 +168,16 @@
 				return $plugins;
 			}
 
-			$filters = $this->getOption('plugins_update_filters');
+			$pluginFilters = new WUPM_PluginFilters($this->plugin);
 
-			if( !empty($filters) && isset($filters['disable_updates']) ) {
-				foreach((array)$plugins->response as $slug => $plugin) {
-					$slug_parts = explode('/', $slug);
-					$actual_slug = array_shift($slug_parts);
-					if( isset($filters['disable_updates'][$actual_slug]) ) {
-						unset($plugins->response[$slug]);
-					}
+			foreach((array)$plugins->response as $slug => $plugin) {
+				$slug_parts = explode('/', $slug);
+				$actual_slug = array_shift($slug_parts);
+
+				$filters = $pluginFilters->getPlugins(array($actual_slug));
+
+				if( isset($filters['disable_updates'][$actual_slug]) && $filters['disable_updates'][$actual_slug] ) {
+					unset($plugins->response[$slug]);
 				}
 			}
 
@@ -192,7 +185,7 @@
 		}
 
 		/**
-		 * Disables theme and plugin http requests on an individual basis.
+		 * Disables plugin http requests on an individual basis.
 		 *
 		 * @param array $r Request array
 		 * @param string $url URL requested
@@ -206,14 +199,16 @@
 
 			if( isset($r['body']['plugins']) ) {
 				$r_plugins = json_decode($r['body']['plugins'], true);
-				$filters = $this->getOption('plugins_update_filters');
+				$pluginFilters = new WUPM_PluginFilters($this->plugin);
 
 				if( isset($r_plugins['plugins']) && !empty($r_plugins['plugins']) ) {
 					foreach($r_plugins['plugins'] as $slug => $plugin) {
 						$slug_parts = explode('/', $slug);
 						$actual_slug = array_shift($slug_parts);
 
-						if( isset($filters['disable_updates']) && isset($filters['disable_updates'][$actual_slug]) ) {
+						$filters = $pluginFilters->getPlugins(array($actual_slug));
+
+						if( isset($filters['disable_updates'][$actual_slug]) and $filters['disable_updates'][$actual_slug] ) {
 							unset($r_plugins['plugins'][$slug]);
 
 							if( false !== $key = array_search($slug, $r_plugins['active']) ) {
@@ -233,6 +228,7 @@
 		public function disableAllCoreUpdates()
 		{
 			add_action('admin_init', array($this, 'adminInitForCore'));
+			add_action('admin_init', array($this, 'disableUpdateNag'));
 
 			/*
 			 * Disable All Automatic Updates
@@ -250,8 +246,17 @@
 			add_filter('send_core_update_notification_email', '__return_false');
 			add_filter('automatic_updates_send_debug_email', '__return_false');
 			add_filter('automatic_updates_is_vcs_checkout', '__return_true');
+		}
+
+		/**
+		 * callback for action "admin_init"
+		 * remove update nag in admin pages
+		 */
+		function disableUpdateNag()
+		{
 			remove_action('admin_notices', 'update_nag', 3);
 			remove_action('admin_notices', 'maintenance_nag');
+			remove_action('network_admin_notices', 'update_nag', 3);
 		}
 
 		/**

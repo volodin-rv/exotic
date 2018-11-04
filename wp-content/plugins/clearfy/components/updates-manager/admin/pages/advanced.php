@@ -10,13 +10,13 @@
 		exit;
 	}
 	
-	class WbcrUpm_AdvancedPage extends Wbcr_FactoryPages401_ImpressiveThemplate {
+	class WUPM_AdvancedPage extends Wbcr_FactoryClearfy206_PageBase {
 		
 		/**
 		 * The id of the page in the admin menu.
 		 *
 		 * Mainly used to navigate between pages.
-		 * @see FactoryPages401_AdminPage
+		 * @see FactoryPages410_AdminPage
 		 *
 		 * @since 1.0.0
 		 * @var string
@@ -28,15 +28,39 @@
 		public $page_parent_page = 'updates';
 		
 		public $page_menu_dashicon = 'dashicons-cloud';
+
+		/**
+		 * Доступена для мультисайтов
+		 * @var bool
+		 */
+		public $available_for_multisite = true;
 		
 		/**
-		 * @param Wbcr_Factory400_Plugin $plugin
+		 * @param Wbcr_Factory409_Plugin $plugin
 		 */
-		public function __construct(Wbcr_Factory400_Plugin $plugin)
+		public function __construct(Wbcr_Factory409_Plugin $plugin)
 		{
 			$this->menu_title = __('Advanced', 'webcraftic-updates-manager');
 			
 			parent::__construct($plugin);
+		}
+
+		/**
+		 * Requests assets (js and css) for the page.
+		 *
+		 * @see Wbcr_FactoryPages410_AdminPage
+		 *
+		 * @since 1.0.0
+		 * @return void
+		 */
+		public function assets($scripts, $styles)
+		{
+			parent::assets($scripts, $styles);
+
+			// Add Clearfy styles for HMWP pages
+			if( defined('WBCR_CLEARFY_PLUGIN_ACTIVE') ) {
+				$this->styles->add(WCL_PLUGIN_URL . '/admin/assets/css/general.css');
+			}
 		}
 		
 		public function warningNotice()
@@ -68,15 +92,30 @@
 			if( !current_user_can('install_plugins') ) {
 				return;
 			}
-			
-			wp_schedule_single_event(time() + 10, 'wp_update_plugins');
-			wp_schedule_single_event(time() + 10, 'wp_version_check');
-			wp_schedule_single_event(time() + 10, 'wp_update_themes');
-			wp_schedule_single_event(time() + 45, 'wp_maybe_auto_update');
-			
-			if( get_option('auto_updater.lock', false) ) {
-				update_option('auto_updater.lock', time() - HOUR_IN_SECONDS * 2);
-			}
+
+			$shedule_auto_update = function() {
+				wp_schedule_single_event(time() + 10, 'wp_update_plugins');
+				wp_schedule_single_event(time() + 10, 'wp_version_check');
+				wp_schedule_single_event(time() + 10, 'wp_update_themes');
+				wp_schedule_single_event(time() + 45, 'wp_maybe_auto_update');
+
+				if( get_option('auto_updater.lock', false) ) {
+					update_option('auto_updater.lock', time() - HOUR_IN_SECONDS * 2);
+				}
+            };
+
+			if ( WUPM_Plugin::app()->isNetworkAdmin() ) {
+				foreach ( WUPM_Plugin::app()->getActiveSites() as $site ) {
+					switch_to_blog( $site->blog_id );
+
+					$shedule_auto_update();
+
+					restore_current_blog();
+			    }
+            }
+			else {
+				$shedule_auto_update();
+            }
 			
 			$this->redirectToAction('index', array('wbcr_force_update' => 1));
 		}

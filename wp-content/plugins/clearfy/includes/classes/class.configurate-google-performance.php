@@ -11,7 +11,7 @@
 		exit;
 	}
 	
-	class WCL_ConfigGooglePerformance extends Wbcr_FactoryClearfy200_Configurate {
+	class WCL_ConfigGooglePerformance extends Wbcr_FactoryClearfy206_Configurate {
 		
 		/**
 		 * @param WCL_Plugin $plugin
@@ -25,31 +25,20 @@
 		
 		public function registerActionsAndFilters()
 		{
-			if( $this->getOption('disable_google_fonts') ) {
+			if( $this->getPopulateOption('disable_google_fonts') ) {
 				add_action('wp_enqueue_scripts', array($this, 'disableAllGoogleFonts'), 999);
 			}
 
 			if( !is_admin() ) {
-				$load_google_fonts = $this->getOption('lazy_load_google_fonts');
-				$load_font_awesome = $this->getOption('lazy_load_font_awesome');
+				$load_google_fonts = $this->getPopulateOption('lazy_load_google_fonts');
+				$load_font_awesome = $this->getPopulateOption('lazy_load_font_awesome');
 
 				if( $load_google_fonts || $load_font_awesome ) {
 					add_action('wp_print_styles', array($this, 'enqueueScripts'), -1);
 				}
 
-				if( $this->getOption('disable_google_maps') ) {
+				if( $this->getPopulateOption('disable_google_maps') ) {
 					add_action("wp_loaded", array($this, 'disableGoogleMapsObStart'));
-				}
-			}
-
-			if( $this->getOption('ga_cache') ) {
-				add_filter('cron_schedules', array($this, 'cronAdditions'));
-
-				// Load update script to schedule in wp_cron.
-				add_action('wbcr_clearfy_update_local_ga', array($this, 'updateLocalGoogleAnaliticScript'));
-
-				if( !is_admin() ) {
-					$this->addGoogleAnaliticsScript();
 				}
 			}
 		}
@@ -72,7 +61,7 @@
 			global $post;
 
 			$exclude_ids = array();
-			$exclude_from_disable_google_maps = $this->getOption('exclude_from_disable_google_maps');
+			$exclude_from_disable_google_maps = $this->getPopulateOption('exclude_from_disable_google_maps');
 
 			if( '' !== $exclude_from_disable_google_maps ) {
 				$exclude_ids = array_map('intval', explode(',', $exclude_from_disable_google_maps));
@@ -80,7 +69,7 @@
 			if( $post && !in_array($post->ID, $exclude_ids, true) ) {
 				$html = preg_replace('/<script[^<>]*\/\/maps.(googleapis|google|gstatic).com\/[^<>]*><\/script>/i', '', $html);
 
-				if( $this->getOption('remove_iframe_google_maps') ) {
+				if( $this->getPopulateOption('remove_iframe_google_maps') ) {
 					$html = preg_replace('/<iframe[^<>]*\/\/(www\.)?google\.com(\.\w*)?\/maps\/[^<>]*><\/iframe>/i', '', $html);
 				}
 			}
@@ -127,8 +116,8 @@
 			$ret = array();
 			if( isset($wp_styles) && !empty($wp_styles) ) {
 
-				$load_google_fonts = $this->getOption('lazy_load_google_fonts');
-				$load_font_awesome = $this->getOption('lazy_load_font_awesome');
+				$load_google_fonts = $this->getPopulateOption('lazy_load_google_fonts', false);
+				$load_font_awesome = $this->getPopulateOption('lazy_load_font_awesome', false);
 
 				if( $load_google_fonts || $load_font_awesome ) {
 
@@ -146,7 +135,7 @@
 						if( $load_google_fonts && false !== strpos($wp_styles->registered[$handle]->src, $gfonts_base_url) ) {
 							$gfonts_links[] = urldecode(str_replace(array('&amp;'), array('&'), $wp_styles->registered[$handle]->src));
 							wp_dequeue_style($handle);
-						} elseif( $load_font_awesome && false !== strpos($wp_styles->registered[$handle]->src, $font_awesome_slug) || false !== strpos($wp_styles->registered[$handle]->src, $font_awesome_slug_alt) ) {
+						} elseif( $load_font_awesome && ( false !== strpos($wp_styles->registered[$handle]->src, $font_awesome_slug) || false !== strpos($wp_styles->registered[$handle]->src, $font_awesome_slug_alt ) ) ) {
 
 							wp_dequeue_style($handle);
 
@@ -213,10 +202,10 @@
 				? 0
 				: (int)$count;
 
-			$old_val = $this->getOption('combined_font_awesome_requests_number');
+			$old_val = $this->getPopulateOption('combined_font_awesome_requests_number');
 
 			if( false === $old_val || (false !== $old_val && $count > (int)$old_val) ) {
-				$this->updateOption('combined_font_awesome_requests_number', $count);
+				$this->updatePopulateOption('combined_font_awesome_requests_number', $count);
 			}
 		}
 
@@ -226,17 +215,17 @@
 				? 0
 				: (int)$count;
 
-			$old_val = $this->getOption('combined_google_fonts_requests_number');
+			$old_val = $this->getPopulateOption('combined_google_fonts_requests_number');
 
 			if( false === $old_val || (false !== $old_val && $count > (int)$old_val) ) {
-				$this->updateOption('combined_google_fonts_requests_number', $count);
+				$this->updatePopulateOption('combined_google_fonts_requests_number', $count);
 			}
 		}
 
 		public static function saved_external_requests()
 		{
-			$google_fonts = (int)WCL_Plugin::app()->getOption('combined_google_fonts_requests_number');
-			$font_awesome = (int)WCL_Plugin::app()->getOption('combined_font_awesome_requests_number');
+			$google_fonts = (int)WCL_Plugin::app()->getPopulateOption('combined_google_fonts_requests_number');
+			$font_awesome = (int)WCL_Plugin::app()->getPopulateOption('combined_font_awesome_requests_number');
 
 			$google_fonts_saved = 1 < $google_fonts
 				? $google_fonts - 1
@@ -390,101 +379,4 @@
 		/** ======================================================================== */
 		//                         End Lazy load fonts
 		/** ======================================================================== */
-
-		public function cronAdditions($schedules)
-		{
-			$schedules['weekly'] = array(
-				'interval' => DAY_IN_SECONDS * 7,
-				'display' => __('Once Weekly'),
-			);
-
-			$schedules['twicemonthly'] = array(
-				'interval' => DAY_IN_SECONDS * 14,
-				'display' => __('Twice Monthly'),
-			);
-
-			$schedules['monthly'] = array(
-				'interval' => DAY_IN_SECONDS * 30,
-				'display' => __('Once Monthly'),
-			);
-
-			return $schedules;
-		}
-
-		public function updateLocalGoogleAnaliticScript()
-		{
-			include(WCL_PLUGIN_DIR . '/includes/update-local-ga.php');
-		}
-
-		private function addGoogleAnaliticsScript()
-		{
-			$ga_tracking_id = $this->getOption('ga_tracking_id');
-
-			if( !empty($ga_tracking_id) ) {
-				$local_ga_file = WCL_PLUGIN_DIR . '/cache/local-ga.js';
-				// If file is not created yet, create now!
-				if( !file_exists($local_ga_file) ) {
-					ob_start();
-					do_action('wbcr_clearfy_update_local_ga');
-					ob_end_clean();
-				}
-
-				$ga_script_position = $this->getOption('ga_script_position', 'footer');
-				$ga_enqueue_order = $this->getOption('ga_enqueue_order', 0);
-
-				switch( $ga_script_position ) {
-					case 'header':
-						add_action('wp_head', array($this, 'printGoogleAnalitics'), $ga_enqueue_order);
-						break;
-					default:
-						add_action('wp_footer', array($this, 'printGoogleAnalitics'), $ga_enqueue_order);
-				}
-			}
-		}
-
-		/**
-		 * Generate tracking code and add to header/footer (default is header).
-		 */
-		public function printGoogleAnalitics()
-		{
-			$ga_tracking_id = $this->getOption('ga_tracking_id');
-			$ga_track_admin = $this->getOption('ga_track_admin');
-
-			// If user is admin we don't want to render the tracking code, when option is disabled.
-			if( empty($ga_tracking_id) || (current_user_can('manage_options') && (!$ga_track_admin)) ) {
-				return;
-			}
-
-			$ga_adjusted_bounce_rate = $this->getOption('ga_adjusted_bounce_rate', 0);
-			$ga_anonymize_ip = $this->getOption('ga_anonymize_ip');
-			$ga_caos_disable_display_features = $this->getOption('ga_caos_disable_display_features');
-
-			echo "<!-- Google Analytics Local by Clearfy -->" . PHP_EOL;
-
-			echo "<script>" . PHP_EOL;
-			echo "(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-            })(window,document,'script','" . WCL_PLUGIN_URL . "/cache/local-ga.js','ga');" . PHP_EOL;
-
-			echo "ga('create', '" . $ga_tracking_id . "', 'auto');" . PHP_EOL;
-
-			echo 'on' === $ga_caos_disable_display_features
-				? "ga('set', 'displayFeaturesTask', null);" . PHP_EOL
-				: '';
-
-			echo 'on' === $ga_anonymize_ip
-				? "ga('set', 'anonymizeIp', true);" . PHP_EOL
-				: '';
-
-			echo "ga('send', 'pageview');";
-
-			echo $ga_adjusted_bounce_rate
-				? 'setTimeout("ga(' . "'send','event','adjusted bounce rate','" . $ga_adjusted_bounce_rate . " seconds')" . '"' . ',' . $ga_adjusted_bounce_rate * 1000 . ');' . PHP_EOL
-				: '';
-
-			echo PHP_EOL . '</script>' . PHP_EOL;
-
-			echo "<!-- end Google Analytics Local by Clearfy -->" . PHP_EOL;
-		}
 	}

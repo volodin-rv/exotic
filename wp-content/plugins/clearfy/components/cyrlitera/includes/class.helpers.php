@@ -19,6 +19,7 @@
 			$origin_title = $title;
 			$iso9_table = self::getSymbolsPack();
 
+			$title = urldecode($title);
 			$title = strtr($title, $iso9_table);
 
 			if( function_exists('iconv') ) {
@@ -54,9 +55,7 @@
 				}
 			}
 
-			$term = $is_term
-				? $wpdb->get_var($wpdb->prepare("SELECT slug FROM {$wpdb->terms} WHERE name = '%s'", $title))
-				: '';
+			$term = $is_term ? $wpdb->get_var($wpdb->prepare("SELECT slug FROM {$wpdb->terms} WHERE name = '%s'", $title)) : '';
 
 			if( empty($term) ) {
 				$title = self::transliterate($title);
@@ -226,7 +225,7 @@
 				);
 			}
 
-			$custom_rules = WCTR_Plugin::app()->getOption('custom_symbols_pack');
+			$custom_rules = WCTR_Plugin::app()->getPopulateOption('custom_symbols_pack');
 
 			if( !empty($custom_rules) ) {
 				$split_rules = explode(',', $custom_rules);
@@ -241,17 +240,77 @@
 						}
 
 						$ret[$split_symbols[0]] = $split_symbols[1];
-
-						//todo: don't support php 7.2
-						/*if( strlen($split_symbols[1]) > 0 ) {
-							$ret[mb_strtoupper($split_symbols[0], 'UTF-8')] = mb_strtoupper($split_symbols[1]{0}, 'UTF-8') . substr($split_symbols[1], 1);
-						} else {
-							$ret[mb_strtoupper($split_symbols[0], 'UTF-8')] = $split_symbols[1];
-						}*/
 					}
 				}
 			}
 
 			return apply_filters('wbcr_cyrlitera_default_symbols_pack', $ret);
+		}
+
+		/**
+		 * Делает откат изменений после выполнения метода convertExistingSlugs,
+		 * этот метод не восстановливает вновь конвертированные слаги.
+		 */
+		public static function rollbackUrlChanges()
+		{
+			global $wpdb;
+
+			$posts = $wpdb->get_results("SELECT p.ID, p.post_name, m.meta_value as old_post_name FROM {$wpdb->posts} p
+						LEFT JOIN {$wpdb->postmeta} m
+						ON p.ID = m.post_id
+						WHERE p.post_status
+						IN ('publish', 'future', 'private') AND m.meta_key='wbcr_wp_old_slug' AND m.meta_value IS NOT NULL");
+
+			foreach((array)$posts as $post) {
+				if( $post->post_name != $post->old_post_name ) {
+					$wpdb->update($wpdb->posts, array('post_name' => $post->old_post_name), array('ID' => $post->ID), array('%s'), array('%d'));
+					delete_post_meta($post->ID, 'wbcr_wp_old_slug');
+				}
+			}
+
+			$terms = $wpdb->get_results("SELECT t.term_id, t.slug, o.option_value as old_term_slug FROM {$wpdb->terms} t
+						LEFT JOIN {$wpdb->options} o
+						ON o.option_name=concat('wbcr_wp_term_',t.term_id, '_old_slug')
+						WHERE o.option_value IS NOT NULL");
+
+			foreach((array)$terms as $term) {
+				if( $term->slug != $term->old_term_slug ) {
+					$wpdb->update($wpdb->terms, array('slug' => $term->old_term_slug), array('term_id' => $term->term_id), array('%s'), array('%d'));
+					delete_option('wbcr_wp_term_' . $term->term_id . '_old_slug');
+				}
+			}
+		}
+
+		/**
+		 * Массово конвертирует слаги для страниц, записей, терминов и т.д.
+		 * Делает бекап старого слага, чтобы можно было восстановить его. А также использовать в других плагинах.
+		 */
+		public static function convertExistingSlugs()
+		{
+			global $wpdb;
+
+			$posts = $wpdb->get_results("SELECT ID, post_name FROM {$wpdb->posts}
+ 					WHERE post_name REGEXP('[^_A-Za-z0-9\-]+') AND post_status IN ('publish', 'future', 'private')");
+
+			foreach((array)$posts as $post) {
+				$sanitized_name = WCTR_Helper::sanitizeTitle(urldecode($post->post_name));
+
+				if( $post->post_name != $sanitized_name ) {
+					add_post_meta($post->ID, 'wbcr_wp_old_slug', $post->post_name);
+
+					$wpdb->update($wpdb->posts, array('post_name' => $sanitized_name), array('ID' => $post->ID), array('%s'), array('%d'));
+				}
+			}
+
+			$terms = $wpdb->get_results("SELECT term_id, slug FROM {$wpdb->terms} WHERE slug REGEXP('[^_A-Za-z0-9\-]+')");
+
+			foreach((array)$terms as $term) {
+				$sanitized_slug = WCTR_Helper::sanitizeTitle(urldecode($term->slug));
+
+				if( $term->slug != $sanitized_slug ) {
+					update_option('wbcr_wp_term_' . $term->term_id . '_old_slug', $term->slug, false);
+					$wpdb->update($wpdb->terms, array('slug' => $sanitized_slug), array('term_id' => $term->term_id), array('%s'), array('%d'));
+				}
+			}
 		}
 	}

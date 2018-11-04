@@ -11,13 +11,13 @@
 		exit;
 	}
 
-	class WbcrGnz_AssetsManagerPage extends Wbcr_FactoryPages401_ImpressiveThemplate {
+	class WbcrGnz_AssetsManagerPage extends Wbcr_FactoryClearfy206_PageBase {
 
 		/**
 		 * The id of the page in the admin menu.
 		 *
 		 * Mainly used to navigate between pages.
-		 * @see FactoryPages401_AdminPage
+		 * @see FactoryPages410_AdminPage
 		 *
 		 * @since 1.0.0
 		 * @var string
@@ -35,13 +35,19 @@
 		public $page_menu_position = 95;
 
 		/**
-		 * @param Wbcr_Factory400_Plugin $plugin
+		 * Доступена для мультисайтов
+		 * @var bool
 		 */
-		public function __construct(Wbcr_Factory400_Plugin $plugin)
+		public $available_for_multisite = true;
+
+		/**
+		 * @param Wbcr_Factory409_Plugin $plugin
+		 */
+		public function __construct(Wbcr_Factory409_Plugin $plugin)
 		{
 			$this->menu_title = __('Assets manager', 'gonzales');
 
-			if( !defined('LOADING_GONZALES_AS_ADDON') ) {
+			if( !defined('LOADING_ASSETS_MANAGER_AS_ADDON') ) {
 				$this->internal = false;
 				$this->menu_target = 'options-general.php';
 				$this->add_link_to_plugin_actions = true;
@@ -53,13 +59,20 @@
 		}
 
 		/**
+		 * Метод позволяет менять заголовок меню, в зависимости от сборки плагина.
 		 * @return string|void
 		 */
 		public function getMenuTitle()
 		{
-			return defined('LOADING_GONZALES_AS_ADDON')
-				? __('Assets manager', 'gonzales')
-				: __('General', 'gonzales');
+			return defined('LOADING_ASSETS_MANAGER_AS_ADDON') ? __('General', 'hide-login-page') : __('Assets manager', 'gonzales');
+		}
+
+		/**
+		 * @return string|void         *
+		 */
+		public function getPageTitle()
+		{
+			return defined('LOADING_ASSETS_MANAGER_AS_ADDON') ? __('Assets manager', 'gonzales') : __('General', 'hide-login-page');
 		}
 
 		/**
@@ -68,7 +81,7 @@
 		 * @since 1.0.0
 		 * @return mixed[]
 		 */
-		public function getOptions()
+		public function getPageOptions()
 		{
 			$options = array();
 			$options[] = array(
@@ -128,6 +141,11 @@
 						'default' => true
 					)
 				)
+			);
+
+			$options[] = array(
+				'type' => 'separator',
+				'cssClass' => 'factory-separator-dashed'
 			);
 
 			$formOptions = array();

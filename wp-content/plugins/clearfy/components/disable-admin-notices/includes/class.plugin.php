@@ -14,12 +14,12 @@
 	if( !class_exists('WDN_Plugin') ) {
 		
 		if( !class_exists('WDN_PluginFactory') ) {
-			if( defined('LOADING_CYRLITERA_AS_ADDON') ) {
+			if( defined('LOADING_DISABLE_ADMIN_NOTICES_AS_ADDON') ) {
 				class WDN_PluginFactory {
 					
 				}
 			} else {
-				class WDN_PluginFactory extends Wbcr_Factory400_Plugin {
+				class WDN_PluginFactory extends Wbcr_Factory409_Plugin {
 					
 				}
 			}
@@ -28,7 +28,7 @@
 		class WDN_Plugin extends WDN_PluginFactory {
 			
 			/**
-			 * @var Wbcr_Factory400_Plugin
+			 * @var Wbcr_Factory409_Plugin
 			 */
 			private static $app;
 			
@@ -47,11 +47,9 @@
 				$this->as_addon = isset($data['as_addon']);
 				
 				if( $this->as_addon ) {
-					$plugin_parent = isset($data['plugin_parent'])
-						? $data['plugin_parent']
-						: null;
+					$plugin_parent = isset($data['plugin_parent']) ? $data['plugin_parent'] : null;
 					
-					if( !($plugin_parent instanceof Wbcr_Factory400_Plugin) ) {
+					if( !($plugin_parent instanceof Wbcr_Factory409_Plugin) ) {
 						throw new Exception('An invalid instance of the class was passed.');
 					}
 					
@@ -64,7 +62,6 @@
 					parent::__construct($plugin_path, $data);
 				}
 
-				$this->setTextDomain();
 				$this->setModules();
 				
 				$this->globalScripts();
@@ -72,30 +69,31 @@
 				if( is_admin() ) {
 					$this->adminScripts();
 				}
+
+				add_action('plugins_loaded', array($this, 'pluginsLoaded'));
 			}
 			
 			/**
-			 * @return Wbcr_Factory400_Plugin
+			 * @return Wbcr_Factory409_Plugin
 			 */
 			public static function app()
 			{
 				return self::$app;
 			}
 
-			protected function setTextDomain()
+			public function pluginsLoaded()
 			{
-				// Localization plugin
-				load_plugin_textdomain('disable-admin-notices', false, dirname(WDN_PLUGIN_BASE) . '/languages/');
+				self::app()->setTextDomain('disable-admin-notices', WDN_PLUGIN_DIR);
 			}
-			
+
 			protected function setModules()
 			{
 				if( !$this->as_addon ) {
 					self::app()->load(array(
-						array('libs/factory/bootstrap', 'factory_bootstrap_400', 'admin'),
-						array('libs/factory/forms', 'factory_forms_400', 'admin'),
-						array('libs/factory/pages', 'factory_pages_401', 'admin'),
-						array('libs/factory/clearfy', 'factory_clearfy_200', 'all')
+						array('libs/factory/bootstrap', 'factory_bootstrap_409', 'admin'),
+						array('libs/factory/forms', 'factory_forms_410', 'admin'),
+						array('libs/factory/pages', 'factory_pages_410', 'admin'),
+						array('libs/factory/clearfy', 'factory_clearfy_206', 'all')
 					));
 				}
 			}
@@ -113,11 +111,8 @@
 			{
 				require(WDN_PLUGIN_DIR . '/admin/options.php');
 
-				if( defined('DOING_AJAX') && DOING_AJAX && isset($_REQUEST['action']) && $_REQUEST['action'] == 'wbcr_dan_hide_notices' ) {
+				if( defined('DOING_AJAX') && DOING_AJAX ) {
 					require(WDN_PLUGIN_DIR . '/admin/ajax/hide-notice.php');
-				}
-
-				if( defined('DOING_AJAX') && DOING_AJAX && isset($_REQUEST['action']) && $_REQUEST['action'] == 'wbcr_dan_restore_notice' ) {
 					require(WDN_PLUGIN_DIR . '/admin/ajax/restore-notice.php');
 				}
 

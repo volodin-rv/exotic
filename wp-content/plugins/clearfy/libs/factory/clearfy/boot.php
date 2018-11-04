@@ -14,24 +14,34 @@
 		exit;
 	}
 
-	if( defined('FACTORY_CLEARFY_200_LOADED') ) {
+	if( defined('FACTORY_CLEARFY_206_LOADED') ) {
 		return;
 	}
-	define('FACTORY_CLEARFY_200_LOADED', true);
 
-	define('FACTORY_CLEARFY_200_DIR', dirname(__FILE__));
-	define('FACTORY_CLEARFY_200_URL', plugins_url(null, __FILE__));
+	define('FACTORY_CLEARFY_206_LOADED', true);
 
-	load_plugin_textdomain('wbcr_factory_clearfy_200', false, dirname(plugin_basename(__FILE__)) . '/langs');
+	define('FACTORY_CLEARFY_206', '2.0.6');
 
-	require(FACTORY_CLEARFY_200_DIR . '/includes/class.helpers.php');
-	require(FACTORY_CLEARFY_200_DIR . '/includes/class.configurate.php');
+	define('FACTORY_CLEARFY_206_DIR', dirname(__FILE__));
+	define('FACTORY_CLEARFY_206_URL', plugins_url(null, __FILE__));
+
+	load_plugin_textdomain('wbcr_factory_clearfy_206', false, dirname(plugin_basename(__FILE__)) . '/langs');
+
+	require(FACTORY_CLEARFY_206_DIR . '/includes/class.helpers.php');
+	require(FACTORY_CLEARFY_206_DIR . '/includes/class.configurate.php');
 
 	// module provides function only for the admin area
-	if( !is_admin() ) {
-		return;
-	}
+	if( is_admin() ) {
+		/**
+		 * Подключаем скрипты для установки компонентов Clearfy
+		 * на все страницы админпанели
+		 */
+		add_action('admin_enqueue_scripts', function () {
+			wp_enqueue_script('wbcr-factory-clearfy-206-global', FACTORY_CLEARFY_206_URL . '/assets/js/globals.js', array('jquery'), FACTORY_CLEARFY_206);
+		});
 
-	if( defined('FACTORY_PAGES_401_LOADED') ) {
-		require(FACTORY_CLEARFY_200_DIR . '/pages/more-features.php');
+		if( defined('FACTORY_PAGES_410_LOADED') ) {
+			require(FACTORY_CLEARFY_206_DIR . '/pages/more-features.php');
+			require(FACTORY_CLEARFY_206_DIR . '/pages/class.pages.php');
+		}
 	}

@@ -33,6 +33,7 @@ We invite you to check out a few other related free plugins that our team has al
 * [Disable Comments for Any Post Types (Remove Comments)](https://wordpress.org/plugins/comments-plus/)
 * [Cyrlitera – transliteration of links and file names](https://wordpress.org/plugins/cyrlitera/)
 * [Disable updates, Disable automatic updates, Updates manager](https://wordpress.org/plugins/webcraftic-updates-manager/)
+* [Hide login page, Hide wp admin – stop attack on login page](https://wordpress.org/plugins/hide-login-page//)
 
 == Translations ==
 
@@ -53,9 +54,10 @@ If you want to help with the translation, please contact me through this site or
 3. Notifications panel (optional)
 
 == Changelog ==
+= 1.0.6 =
+* Fixed: compatibility with some plugins and themes
 = 1.0.5 =
 * Fixed: Prefix bug
-
 = 1.0.4 =
 * Fixed: Compatibility with Clearfy plugin
 * ADDED: Plugin options caching to reduce database queries for 90%. Clearfy became lighter and faster.

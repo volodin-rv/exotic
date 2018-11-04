@@ -10,13 +10,13 @@
 		exit;
 	}
 
-	class WCL_PerformancePage extends WCL_Page {
+	class WCL_PerformancePage extends Wbcr_FactoryClearfy206_PageBase {
 
 		/**
 		 * The id of the page in the admin menu.
 		 *
 		 * Mainly used to navigate between pages.
-		 * @see FactoryPages401_AdminPage
+		 * @see FactoryPages410_AdminPage
 		 *
 		 * @since 1.0.0
 		 * @var string
@@ -32,6 +32,8 @@
 		 * @var int
 		 */
 		public $page_menu_position = 20;
+		
+		public $available_for_multisite = true;
 
 		/**
 		 * @param WCL_Plugin $plugin
@@ -39,6 +41,7 @@
 		public function __construct(WCL_Plugin $plugin)
 		{
 			$this->menu_title = __('Performance', 'clearfy');
+			$this->page_menu_short_description = __('Optimization js, css, fonts', 'clearfy');
 
 			parent::__construct($plugin);
 
@@ -47,7 +50,7 @@
 
 		public function afterFormSave()
 		{
-			if( $this->getOption('disable_gravatars') ) {
+			if( $this->getPopulateOption('disable_gravatars') ) {
 				update_option('show_avatars', false);
 			} else {
 				update_option('show_avatars', true);
@@ -60,7 +63,7 @@
 		 * @since 1.0.0
 		 * @return mixed[]
 		 */
-		public function getOptions()
+		public function getPageOptions()
 		{
 			$options = array();
 
@@ -125,7 +128,7 @@
 				'name' => 'remove_jquery_migrate',
 				'title' => __('Remove jQuery Migrate', 'clearfy'),
 				'layout' => array('hint-type' => 'icon', 'hint-icon-color' => 'red'),
-				'hint' => __('They started adding jQuery migrate in WordPress 3.6. Most up-to-date frontend code and plugins don’t require jquery-migrate.min.js. In most cases, this simply adds unnecessary load to your site. You can see this running if you launch Chrome Devtools console.', 'clearfy') . '<br><br><b>Clearfy: </b>' . __('Removes jQuery Migrate JavaScript file (jquery-migrate.min.js).', 'clearfy') . '<br>--<br><span class="hint-warnign-color">' . __('Warning! If there is a broke on your site, disable this option!', 'clearfy') . '</span>',
+				'hint' => __('They started adding jQuery migrate in WordPress 3.6. Most up-to-date frontend code and plugins don’t require jquery-migrate.min.js. In most cases, this simply adds unnecessary load to your site. You can see this running if you launch Chrome Devtools console.', 'clearfy') . '<br><br><b>Clearfy: </b>' . __('Removes jQuery Migrate JavaScript file (jquery-migrate.min.js).', 'clearfy') . '<br>--<br><span class="wbcr-factory-light-orange-color">' . __('Warning! If there is a broke on your site, disable this option!', 'clearfy') . '</span>',
 				'default' => false
 			);
 
@@ -239,37 +242,6 @@ In particular, the profile is used for the XFN microformat (XHTML Friends Networ
 			If you’re using Identicons or any other generated default avatar, the user should keep a consistent avatar unless they change their registered email.
 			', 'clearfy'),
 				'default' => false
-			);
-			
-			$options[] = array(
-				'type' => 'checkbox',
-				'way' => 'buttons',
-				'name' => 'remove_style_version',
-				'title' => __('Remove Version from Stylesheet', 'clearfy') . ' <span class="wbcr-clearfy-recomended-text">(' . __('Recommended', 'clearfy') . ')</span>',
-				'layout' => array('hint-type' => 'icon'),
-				'hint' => __('To make it more difficult for others to hack your website you can remove the WordPress version number from your site, your css and js. Without that number it\'s not possible to see if you run not the current version to exploit bugs from the older versions. <br><br>
-					Additionally it can improve the loading speed of your site, because without query strings in the URL the css and js files can be cached.', 'clearfy') . '<br><br><b>Clearfy: </b>' . __('Removes the wordpress version number from stylesheets (not logged in user only).', 'clearfy'),
-				'default' => false
-			);
-
-			$options[] = array(
-				'type' => 'checkbox',
-				'way' => 'buttons',
-				'name' => 'remove_js_version',
-				'title' => __('Remove Version from Script', 'clearfy') . ' <span class="wbcr-clearfy-recomended-text">(' . __('Recommended', 'clearfy') . ')</span>',
-				'layout' => array('hint-type' => 'icon'),
-				'hint' => __('To make it more difficult for others to hack your website you can remove the WordPress version number from your site, your css and js. Without that number it\'s not possible to see if you run not the current version to exploit bugs from the older versions. <br><br>
-					Additionally it can improve the loading speed of your site, because without query strings in the URL the css and js files can be cached.', 'clearfy') . '<br><br><b>Clearfy: </b>' . __('Removes wordpress version number from scripts (not logged in user only).', 'clearfy'),
-				'default' => false
-			);
-
-			$options[] = array(
-				'type' => 'textarea',
-				'name' => 'remove_version_exclude',
-				'height' => '120',
-				'title' => __('Exclude stylesheet/script file names', 'clearfy'),
-				'layout' => array('hint-type' => 'icon', 'hint-icon-color' => 'grey'),
-				'hint' => __('Enter Stylesheet/Script file names to exclude from version removal (each exclude file starts with a new line)', 'clearfy') . '<br><br><b>' . __('Example', 'clearfy') . ':</b>' . ' http://testwp.dev/wp-includes/js/jquery/jquery.js',
 			);
 
 			$form_options = array();

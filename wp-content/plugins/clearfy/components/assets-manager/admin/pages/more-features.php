@@ -11,6 +11,10 @@
 		exit;
 	}
 
-	class WbcrGnz_MoreFeaturesPage extends Wbcr_FactoryClearfy200_MoreFeaturesPage {
+	class WbcrGnz_MoreFeaturesPage extends Wbcr_FactoryClearfy206_MoreFeaturesPage {
 
+		/**
+		 * @var bool
+		 */
+		public $available_for_multisite = true;
 	}

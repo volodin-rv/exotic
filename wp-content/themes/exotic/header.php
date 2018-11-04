@@ -60,7 +60,7 @@
     top: -30px;
     right: 0;
     bottom: 0;
-    background: #000;
+    background: rgba(0, 0, 0, 0.95);
     z-index: 100500;
   }
   #page-preloader .spinner {

@@ -12,13 +12,13 @@
 	}
 
 
-	class WbcrUpm_PluginsPage extends Wbcr_FactoryPages401_ImpressiveThemplate {
+	class WUPM_PluginsPage extends Wbcr_FactoryClearfy206_PageBase {
 
 		/**
 		 * The id of the page in the admin menu.
 		 *
 		 * Mainly used to navigate between pages.
-		 * @see FactoryPages401_AdminPage
+		 * @see FactoryPages410_AdminPage
 		 *
 		 * @since 1.0.0
 		 * @var string
@@ -40,6 +40,13 @@
 		 */
 		public $page_menu_dashicon = 'dashicons-cloud';
 
+
+		/**
+		 * Доступена для мультисайтов
+		 * @var bool
+		 */
+		public $available_for_multisite = true;
+
 		/**
 		 * @var
 		 */
@@ -50,25 +57,28 @@
 		 */
 		private $is_auto_updates;
 
+		private $is_disable_translation_updates;
+
 		/**
 		 * @var array
 		 */
 		private $plugins_update_filters = array();
 
 		/**
-		 * @param Wbcr_Factory400_Plugin $plugin
+		 * @param Wbcr_Factory409_Plugin $plugin
 		 */
-		public function __construct(Wbcr_Factory400_Plugin $plugin)
+		public function __construct(Wbcr_Factory409_Plugin $plugin)
 		{
 			$this->menu_title = __('Plugins', 'webcraftic-updates-manager');
 
 			parent::__construct($plugin);
 
-			$updates_mode = $this->getOption('plugin_updates');
+			$updates_mode = $this->getPopulateOption('plugin_updates');
 
 			$this->is_disable_updates = $updates_mode == 'disable_plugin_updates';
 			$this->is_auto_updates = $updates_mode == 'enable_plugin_auto_updates';
-			$this->plugins_update_filters = $this->getOption('plugins_update_filters');
+			$this->is_disable_translation_updates = $this->getPopulateOption('auto_tran_update');
+			$this->plugins_update_filters = $this->getPopulateOption('plugins_update_filters');
 		}
 
 		public function warningNotice()
@@ -93,7 +103,7 @@
 		/**
 		 * Requests assets (js and css) for the page.
 		 *
-		 * @see FactoryPages401_AdminPage
+		 * @see FactoryPages410_AdminPage
 		 *
 		 * @since 1.0.0
 		 * @return void
@@ -101,12 +111,18 @@
 		public function assets($scripts, $styles)
 		{
 			parent::assets($scripts, $styles);
-			$this->styles->add(WUP_PLUGIN_URL . '/admin/assets/css/general.css');
+			$this->styles->add(WUPM_PLUGIN_URL . '/admin/assets/css/general.css');
+			$this->scripts->add(WUPM_PLUGIN_URL . '/admin/assets/js/ajax-components.js');
+
+			// Add Clearfy styles for HMWP pages
+			if( defined('WBCR_CLEARFY_PLUGIN_ACTIVE') ) {
+				$this->styles->add(WCL_PLUGIN_URL . '/admin/assets/css/general.css');
+			}
 		}
 
 		public function savePluginsUpdateFilters()
 		{
-			$this->plugin->updateOption('plugins_update_filters', $this->plugins_update_filters);
+			$this->plugin->updatePopulateOption('plugins_update_filters', $this->plugins_update_filters);
 		}
 
 		public function disablePluginUpdatesAction()
@@ -190,6 +206,40 @@
 			$this->redirectToAction('index');
 		}
 
+		public function enablePluginTranslationUpdatesAction()
+		{
+			if( !$this->is_disable_translation_updates ) {
+				$plugin_slug = $this->request->get('plugin_slug', null, true);
+				check_admin_referer($this->getResultId() . '_' . $plugin_slug);
+
+				if( !empty($plugin_slug) ) {
+					if( isset($this->plugins_update_filters['disable_translation_updates']) && isset($this->plugins_update_filters['disable_translation_updates'][$plugin_slug]) ) {
+						unset($this->plugins_update_filters['disable_translation_updates'][$plugin_slug]);
+						$this->savePluginsUpdateFilters();
+					}
+				}
+			}
+			$this->redirectToAction('index');
+		}
+
+		public function disablePluginTranslationUpdatesAction()
+		{
+			if( !$this->is_disable_translation_updates ) {
+				$plugin_slug = $this->request->get('plugin_slug', null, true);
+				check_admin_referer($this->getResultId() . '_' . $plugin_slug);
+
+				if( !empty($plugin_slug) ) {
+					if( !isset($this->plugins_update_filters['disable_translation_updates']) ) {
+						$this->plugins_update_filters['disable_translation_updates'] = array();
+					}
+					$this->plugins_update_filters['disable_translation_updates'][$plugin_slug] = true;
+					$this->savePluginsUpdateFilters();
+				}
+			}
+
+			$this->redirectToAction('index');
+		}
+
 		public function showPageContent()
 		{
 			if( isset($_POST['wbcr_upm_apply']) ) {
@@ -197,8 +247,23 @@
 				$bulk_action = $this->request->post('wbcr_upm_bulk_actions', null, true);
 				$plugin_slugs = $this->request->post('plugin_slugs', array(), true);
 
-				check_admin_referer($this->getResultId() . '_form');
+				$plugin_slugs = array_map('strip_tags', $plugin_slugs);
 
+				check_admin_referer($this->getResultId() . '_form');
+				// validate $bulk_action
+				if( !empty($bulk_action) and !in_array($bulk_action, array(
+						'disable_updates',
+						'enable_updates',
+						'enable_auto_updates',
+						'disable_auto_updates',
+						'disable_translation_updates',
+						'enable_translation_updates',
+						'disable_display',
+						'enable_display'
+					))
+				) {
+					$bulk_action = null;
+				}
 				if( !$this->is_disable_updates ) {
 					if( !empty($bulk_action) && !empty($plugin_slugs) && is_array($plugin_slugs) ) {
 						foreach((array)$plugin_slugs as $slug) {
@@ -220,12 +285,40 @@
 
 								$this->plugins_update_filters[$bulk_action][$slug] = true;
 							}
-						}
 
-						$this->savePluginsUpdateFilters();
+							if( $bulk_action == 'disable_translation_updates' ) {
+								if( !$this->is_disable_translation_updates ) {
+									$this->plugins_update_filters['disable_translation_updates'][$slug] = true;
+								}
+							}
+							if( $bulk_action == 'enable_translation_updates' && array_key_exists($slug, $this->plugins_update_filters['disable_translation_updates']) ) {
+								if( !$this->is_disable_translation_updates ) {
+									unset($this->plugins_update_filters['disable_translation_updates'][$slug]);
+								}
+							}
+						}
 					}
 				}
+
+				if( !empty($bulk_action) && !empty($plugin_slugs) && is_array($plugin_slugs) ) {
+					foreach((array)$plugin_slugs as $slug) {
+						if( $bulk_action == 'disable_display' ) {
+							if( !isset($this->plugins_update_filters['disable_display']) ) {
+								$this->plugins_update_filters['disable_display'] = array();
+							}
+							$this->plugins_update_filters['disable_display'][$slug] = true;
+						}
+
+						if( $bulk_action == 'enable_display' && isset($this->plugins_update_filters['disable_display']) && isset($this->plugins_update_filters['disable_display'][$slug]) ) {
+							unset($this->plugins_update_filters['disable_display'][$slug]);
+						}
+					}
+				}
+
+				$this->savePluginsUpdateFilters();
 			}
+
+			$is_premium = defined('WUPMP_PLUGIN_ACTIVE');
 
 			?>
 
@@ -254,28 +347,42 @@
 						<option value="enable_updates"><?php _e('Enable updates', 'webcraftic-updates-manager'); ?></option>
 						<option value="enable_auto_updates"><?php _e('Enable auto-updates', 'webcraftic-updates-manager'); ?></option>
 						<option value="disable_auto_updates"><?php _e('Disable auto-updates', 'webcraftic-updates-manager'); ?></option>
+						<option value="disable_translation_updates"<?= (!$is_premium ? ' disabled' : '') ?>><?php _e('Disable translation updates', 'webcraftic-updates-manager'); ?></option>
+						<option value="enable_translation_updates"<?= (!$is_premium ? ' disabled' : '') ?>><?php _e('Enable translation updates', 'webcraftic-updates-manager'); ?></option>
+						<option value="disable_display"<?= (!$is_premium ? ' disabled' : '') ?>><?php _e('Hide plugin', 'webcraftic-updates-manager'); ?></option>
+						<option value="enable_display"<?= (!$is_premium ? ' disabled' : '') ?>><?php _e('Show plugin', 'webcraftic-updates-manager'); ?></option>
 					</select>
 					<input type="submit" name="wbcr_upm_apply" id="wbcr_upm_apply" class='button button-alt' value='<?php _e("Apply", "webcraftic-updates-manager"); ?>'>
 				</p>
-				<table class="wp-list-table widefat autoupdate striped plugins">
+				<table class="wp-list-table widefat autoupdate striped plugins wp-list-table__plugins">
 					<thead>
 					<tr>
-						<td id='cb' class='manage-column column-cb check-column'>&nbsp;</td>
+						<th id='cb' class='manage-column column-cb check-column'>&nbsp;</th>
 						<th id='name' class='manage-column column-name column-primary'>
 							<strong><?php _e('Plugin', 'webcraftic-updates-manager'); ?></strong></th>
-						<th id='description' class='manage-column column-description'>
-							<strong><?php _e('Description', 'webcraftic-updates-manager'); ?></strong></th>
+						<th id="disable_updates">
+							<strong><?php _e('Disable updates', 'webcraftic-updates-manager');?></strong>
+						</th>
+						<th id="disable_auto_updates">
+							<strong><?php _e('Auto-updates', 'webcraftic-updates-manager'); ?></strong>
+						</th>
+						<th id="disable_translation_updates"<?= (!$is_premium ? ' class="wbcr-upm-column-pro"' : '') ?>>
+							<strong><?php _e('Translation updates', 'webcraftic-updates-manager'); ?></strong>
+						</th>
+						<th id="hide_item"<?= (!$is_premium ? ' class="wbcr-upm-column-pro"' : '') ?>>
+							<strong><?php _e('Hide plugin', 'webcraftic-updates-manager'); ?></strong>
+						</th>
 					</tr>
 					</thead>
 					<tbody id="the-list">
 					<?php
-
+						$prefix = $this->plugin->getPrefix();
 						foreach(get_plugins() as $key => $value):
 
 							$slug = $key;
 							$slug_parts = explode('/', $slug);
 							$actual_slug = array_shift($slug_parts);
-							$slug_hash = md5($slug[0]);
+							$slug_hash = md5($slug);
 							$description = $name = 'Empty';
 
 							foreach((array)$value as $k => $v) {
@@ -291,6 +398,8 @@
 							$class = 'active';
 							$is_disable_updates = false;
 							$is_auto_updates = true;
+							$is_disable_translation_update = false;
+							$is_disable_display = false;
 
 							if( !empty($this->plugins_update_filters) ) {
 
@@ -304,53 +413,106 @@
 							}
 
 							if( $this->is_disable_updates ) {
-								$class = 'inactive';
+								$class = 'inactive row-global-disabled';
 								$is_disable_updates = true;
 							}
 
+							if( !empty($this->plugins_update_filters) ) {
+								if( isset($this->plugins_update_filters['disable_translation_updates']) && isset($this->plugins_update_filters['disable_translation_updates'][$actual_slug]) ) {
+									$is_disable_translation_update = true;
+								}
+							}
+
+							if( isset($this->plugins_update_filters['disable_display']) && isset($this->plugins_update_filters['disable_display'][$actual_slug]) ) {
+								$is_disable_display = true;
+							}
 							?>
 							<tr id="post-<?= esc_attr($slug_hash) ?>" class="<?= $class ?>">
-								<th scope="row" class="check-column">
+								<td scope="row" class="check-column">
 									<label class="screen-reader-text" for="cb-select-<?= esc_attr($slug_hash) ?>"><?php _e('Select', 'webcraftic-updates-manager') ?><?= esc_html($name) ?></label>
 									<input id="cb-select-<?= esc_attr($slug_hash) ?>" type="checkbox" name="plugin_slugs[]" value="<?= esc_attr($actual_slug) ?>">
 									<label></label>
 
 									<div class="locked-indicator"></div>
-								</th>
+								</td>
 								<td class="plugin-title column-primary">
 									<strong class="plugin-name">
 										<?= esc_html($name) ?>
 									</strong>
-
-									<div class="row-actions visible status">
-										<?php if( !$this->is_disable_updates ): ?>
-											<?php if( !$is_disable_updates ): ?>
-												<span class="trash"><a href="<?= wp_nonce_url($this->getActionUrl('disable-plugin-updates', array('plugin_slug' => $actual_slug)), $this->getResultId() . '_' . $actual_slug) ?>"><?php _e('Disable updates', 'webcraftic-updates-manager') ?></a></span>
-											<?php else: ?>
-												<span><a href="<?= wp_nonce_url($this->getActionUrl('enable-plugin-updates', array('plugin_slug' => $actual_slug)), $this->getResultId() . '_' . $actual_slug) ?>"><?php _e('Enable updates', 'webcraftic-updates-manager') ?></a></span>
-											<?php endif; ?>
-										<?php else: ?>
-											<span style="text-decoration: underline;"><?php _e('Disable updates', 'webcraftic-updates-manager') ?></span>
-										<?php endif; ?>
-										|
-										<?php if( $this->is_auto_updates && !$is_disable_updates ): ?>
-											<?php if( $is_auto_updates ): ?>
-												<span><a href="<?= wp_nonce_url($this->getActionUrl('disable-plugin-autoupdates', array('plugin_slug' => $actual_slug)), $this->getResultId() . '_' . $actual_slug) ?>"><?php _e('Disable auto-updates', 'webcraftic-updates-manager') ?></a></span>
-											<?php else: ?>
-												<span><a href="<?= wp_nonce_url($this->getActionUrl('enable-plugin-autoupdates', array('plugin_slug' => $actual_slug)), $this->getResultId() . '_' . $actual_slug) ?>"><?php _e('Enable auto-updates', 'webcraftic-updates-manager') ?></a></span>
-											<?php endif; ?>
-										<?php else: ?>
-											<?php if( $is_auto_updates ): ?>
-												<span style="text-decoration: underline;"><?php _e('Disable auto-updates', 'webcraftic-updates-manager') ?></span>
-											<?php else: ?>
-												<span style="text-decoration: underline;"><?php _e('Enable auto-updates', 'webcraftic-updates-manager') ?></span>
-											<?php endif; ?>
-										<?php endif; ?>
+								</td>
+								<!-- отключить все обновления -->
+								<td class="column-flags">
+									<div class="factory-checkbox factory-from-control-checkbox factory-buttons-way btn-group">
+										<?php
+											$disabled = $this->is_disable_updates;
+											$checked = false;
+											if( $is_disable_updates ) {
+												$checked = true;
+											}
+                                            if(in_array($key, WUPM_PluginFilters::getPersistentPlugins())){
+                                                // deny disable update for update manager
+                                                $disabled = true;
+                                            }
+										?>
+										<button type="button" class="btn btn-default btn-small btn-sm factory-on <?= ($checked ? 'active' : ''); ?>"  <?= ($disabled ? 'disabled' : ''); ?>><?php _e('On', 'webcraftic-updates-manager'); ?></button>
+										<button type="button" class="btn btn-default btn-small btn-sm factory-off <?= (!$checked ? 'active' : ''); ?>" data-value="0"  <?= ($disabled ? 'disabled' : ''); ?>><?php _e('Off', 'webcraftic-updates-manager'); ?></button>
+										<input type="checkbox" style="display: none" id="wbcr_updates_manager_disable_updates" class="factory-result factory-ajax-checkbox"
+										       data-disable-group="<?= 'group-' . $slug_hash; ?>" data-action="Updates" data-plugin-slug="<?= $actual_slug ?>" value="<?= (int)$checked ?>" <?= ($checked ? 'checked' : ''); ?>  <?= ($disabled ? 'disabled' : ''); ?>>
 									</div>
 								</td>
-								<td class="column-description desc">
-									<div class="plugin-description">
-										<p><?= esc_html($description) ?></p>
+								<!-- отключить авто-обновления -->
+								<td class="column-flags">
+									<div class="factory-checkbox factory-from-control-checkbox factory-buttons-way btn-group <?= 'group-' . $slug_hash; ?> <?= (!$this->is_auto_updates) ? 'global-disabled' : ''; ?>">
+										<?php
+											$disabled = false;
+											if( !$this->is_auto_updates or $is_disable_updates ) {
+												$disabled = true;
+											}
+											$checked = false;
+											if( !$is_auto_updates ) {
+												$checked = true;
+											}
+
+										?>
+										<button type="button" class="btn btn-default btn-small btn-sm factory-on <?= ($checked ? 'active' : ''); ?>"  <?= ($disabled) ? 'disabled' : ''; ?>><?php _e('On', 'webcraftic-updates-manager'); ?></button>
+										<button type="button" class="btn btn-default btn-small btn-sm factory-off <?= (!$checked ? 'active' : ''); ?>" data-value="0"  <?= ($disabled ? 'disabled' : ''); ?>><?php _e('Off', 'webcraftic-updates-manager'); ?></button>
+										<input type="checkbox" style="display: none" id="wbcr_updates_manager_disable_auto_updates" class="factory-result factory-ajax-checkbox"
+										       data-action="AutoUpdates" data-plugin-slug="<?= $actual_slug ?>" value="<?= (int)$checked ?>" <?= ($checked ? 'checked' : ''); ?>  <?= ($disabled ? 'disabled' : ''); ?>>
+									</div>
+								</td>
+								<!-- отключить обновления переводов -->
+								<td class="column-flags <?= (!$is_premium) ? "wbcr-upm-column-premium" : ""; ?>">
+									<div class="factory-checkbox factory-from-control-checkbox factory-buttons-way btn-group <?= 'group-' . $slug_hash; ?>  <?= (!$is_premium or $this->is_disable_translation_updates ? 'global-disabled' : ''); ?>">
+										<?php
+											$disabled = false;
+											if( !$is_premium or $is_disable_updates or $this->is_disable_translation_updates ) {
+												$disabled = true;
+											}
+											$checked = false;
+											if( $is_disable_translation_update ) {
+												$checked = true;
+											}
+										?>
+										<button type="button" class="btn btn-default btn-small btn-sm factory-on <?= ($checked) ? 'active' : ''; ?>"  <?= ($disabled) ? 'disabled' : ''; ?>><?php _e('On', 'webcraftic-updates-manager'); ?></button>
+										<button type="button" class="btn btn-default btn-small btn-sm factory-off <?= (!$checked) ? 'active' : ''; ?>" data-value="0"  <?= ($disabled ? 'disabled' : ''); ?>><?php _e('Off', 'webcraftic-updates-manager'); ?></button>
+										<input type="checkbox" style="display: none" id="wbcr_updates_manager_disable_translation_updates" class="factory-result factory-ajax-checkbox"
+										       data-action="TranslationUpdates" data-plugin-slug="<?= $actual_slug ?>" value="<?= (int)$checked ?>" <?= ($checked ? 'checked' : ''); ?>  <?= ($disabled ? 'disabled' : ''); ?>>
+									</div>
+								</td>
+								<!-- скрыть плагин -->
+								<td class="column-flags <?= (!$is_premium ? "wbcr-upm-column-premium" : ""); ?>">
+									<div class="factory-checkbox factory-from-control-checkbox factory-buttons-way btn-group <?= (!$is_premium ? 'global-disabled' : ''); ?>">
+										<?php
+											$checked = $is_disable_display;
+											$disabled = false;
+											if( !$is_premium ) {
+												$disabled = true;
+											}
+										?>
+										<button type="button" class="btn btn-default btn-small btn-sm factory-on <?= ($checked ? 'active' : ''); ?>"  <?= ($disabled ? 'disabled' : ''); ?>><?php _e('On', 'webcraftic-updates-manager'); ?></button>
+										<button type="button" class="btn btn-default btn-small btn-sm factory-off <?= (!$checked ? 'active' : ''); ?>" data-value="0"  <?= ($disabled ? 'disabled' : ''); ?>><?php _e('Off', 'webcraftic-updates-manager'); ?></button>
+										<input type="checkbox" style="display: none" id="wbcr_updates_manager_hide_item" class="factory-result factory-ajax-checkbox"
+										       data-action="Display" data-plugin-slug="<?= $actual_slug ?>" value="<?= (int)$checked ?>" <?= ($checked ? 'checked' : ''); ?>  <?= ($disabled ? 'disabled' : ''); ?>>
 									</div>
 								</td>
 							</tr>

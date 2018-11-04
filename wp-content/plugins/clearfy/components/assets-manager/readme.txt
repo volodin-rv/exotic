@@ -3,7 +3,7 @@ Tags: dequeue script, dequeue style, pagespeed, speed, unload style, gonzales, a
 Contributors: webcraftic
 Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VDX7JNTQPNPFW
 Requires at least: 4.2
-Tested up to: 4.9
+Tested up to: 5.0
 Requires PHP: 5.2
 Stable tag: trunk
 License: GPLv2
@@ -43,8 +43,10 @@ We invite you to check out a few other related free plugins that our team has al
 * [Clearfy – WordPress optimization plugin and disable ultimate tweaker](https://wordpress.org/plugins/clearfy/)
 * [Disable Comments for Any Post Types (Remove Comments)](https://wordpress.org/plugins/comments-plus/)
 * [Cyrlitera – transliteration of links and file names](https://wordpress.org/plugins/cyrlitera/)
-* [Disable updates, Disable automatic updates, Updates manager](https://wordpress.org/plugins/webcraftic-updates-manager/)
+* [Cyr-to-lat reloaded – transliteration of links and file names](https://wordpress.org/plugins/cyr-and-lat/ "Cyr-to-lat reloaded")
 * [Disable admin notices individually](https://wordpress.org/plugins/disable-admin-notices/ "Disable admin notices individually")
+* [Hide login page](https://wordpress.org/plugins/hide-login-page/ "Hide login page")
+* [Disable updates, Disable automatic updates, Updates manager](https://wordpress.org/plugins/webcraftic-updates-manager/)
 
 == Installation ==
 
@@ -57,6 +59,26 @@ We invite you to check out a few other related free plugins that our team has al
 2. Assets manager
 
 == Changelog ==
+= 1.0.7 =
+* Fixed: Added compatibility with ithemes sync
+* Fixed: Minor style fixes
+
+= 1.0.6 =
+* Fixed: Fixed a bug when the interface did not open on the frontend.
+
+= 1.0.5 =
+Great update:
+* We completely changed the interface design. Now it is more convenient for visual inspection of resource files.
+* Fixed: All errors that users have reported about
+* Added: Multisite support
+* Added: New logic disabled scripts and styles
+* Added: You can exclude assets from optimizing for Autoptimize and Clearfy plugins.
+* Added: You can exclude resource files for which you do not need to remove the query string.
+* Added: You can see which plugin the style file belongs to and the js file.
+= 1.0.4 =
+* Fixed: Update core
+* Fixed: Compatibility with others plugin
+
 = 1.0.3 =
 * Fixed: Compatibility with Clearfy plugin
 * Fixed: The plugin interface did not work and the styles were not loaded due to security settings

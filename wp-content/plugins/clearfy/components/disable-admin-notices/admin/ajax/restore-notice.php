@@ -15,30 +15,26 @@
 	{
 		check_ajax_referer(WDN_Plugin::app()->getPluginName() . '_ajax_restore_notice_nonce', 'security');
 
-		if( !current_user_can('update_plugins') ) {
-			echo json_encode(array('error' => __('You don\'t have enough capability to edit this information.', 'disable-admin-notices')));
-			exit;
+		if( current_user_can('manage_options') || current_user_can('manage_network') ) {
+			$notice_id = WDN_Plugin::app()->request->post('notice_id', null, true);
+
+			if( empty($notice_id) ) {
+				wp_send_json_error(array('error_message' => __('Undefinded notice id.', 'disable-admin-notices')));
+			}
+
+			$current_user_id = get_current_user_id();
+			$get_hidden_notices = get_user_meta($current_user_id, WDN_Plugin::app()->getOptionName('hidden_notices'), true);
+
+			if( !empty($get_hidden_notices) && isset($get_hidden_notices[$notice_id]) ) {
+				unset($get_hidden_notices[$notice_id]);
+			}
+
+			update_user_meta($current_user_id, WDN_Plugin::app()->getOptionName('hidden_notices'), $get_hidden_notices);
+
+			wp_send_json_success();
+		} else {
+			wp_send_json_error(array('error_message' => __('You don\'t have enough capability to edit this information.', 'disable-admin-notices')));
 		}
-
-		$notice_id = isset($_POST['notice_id'])
-			? sanitize_text_field($_POST['notice_id'])
-			: null;
-
-		if( empty($notice_id) ) {
-			echo json_encode(array('error' => __('Undefinded notice id.', 'disable-admin-notices')));
-			exit;
-		}
-
-		$get_hidden_notices = WDN_Plugin::app()->getOption('hidden_notices');
-
-		if( !empty($get_hidden_notices) && isset($get_hidden_notices[$notice_id]) ) {
-			unset($get_hidden_notices[$notice_id]);
-		}
-
-		WDN_Plugin::app()->updateOption('hidden_notices', $get_hidden_notices);
-
-		echo json_encode(array('success' => __('Success', 'disable-admin-notices')));
-		exit;
 	}
 
-	add_action('wp_ajax_wbcr_dan_restore_notice', 'wbcr_dan_ajax_restore_notice');
+	add_action('wp_ajax_wbcr-dan-restore-notice', 'wbcr_dan_ajax_restore_notice');

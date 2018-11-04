@@ -1,10 +1,10 @@
 ﻿=== Clearfy – WordPress optimization plugin and disable ultimate tweaker ===
 Contributors: webcraftic
-Donate link: https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=VDX7JNTQPNPFW
+Donate link: https://clearfy.pro/pricing/?utm_source=wordpress.org&utm_campaign=wbcr_clearfy&utm_content=repo
 Tags: wp disable, disable comments, disable updates, disable emoji, disable embeds, remove querystrings, disable rest api, bicycles by falbar, remove rss feeds, remove meta generator, yoast seo remove comments, yoast seo, yoast seo breadcrumbs, disable embeds,remove embeds, remove rsd link, dns-prefetch, remove dns-prefetch, meta generator, rsd link, wlw manifest link, remove wlw manifest link, canonical link, remove canonical link, shortlink link, remove shortlink link, emoji, attachment pages, remove attachment pages, rss feeds, disable rss feeds, rest api, disable rest api, remove rest api, clearfy, archives date, post pagination, archives author, hide login errors, recent comments, tag, rpc, xml, xml rpc, xmlrpc, admin bar, remove querystrings, reduce HTTP requests, disable heartbeat, disable revision, heartbeat, revision, clean, optimize, remove rest-api, remove rest-api, remove jquery migrate, html minify, robots.txt editor, plugin updates, disable plugin updates, disable core updates, core updates, enable automatic updates, disable widgets, disable default widgets, remove html comments
 Requires at least: 4.2
-Tested up to: 4.9
-Requires PHP: 5.2
+Tested up to: 5.0
+Requires PHP: 5.3
 Stable tag: trunk
 License: GPLv2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -172,6 +172,9 @@ If you think that you do not need all Clearfy features, you can pick up a mini p
 * French — big thanks to @kingteamdunet, @fchaussin users
 * Italian (70%)
 * Chinese — big thanks to @idoog and @robertsky_
+* German — big thanks to @moviemaster8
+* Dutch (Belgium) — big thanks to sensuelas
+* Portuguese (Brazil) - big thanks to @rdsfelipe
 
 We are very need for your help with [translating the Clearfy plugin](https://translate.wordpress.org/projects/wp-plugins/clearfy) into your native language. We want to make it international and understandable for everyone. Please contact us via email inside the plugin, or create a topic on our [support forum](https://wordpress.org/support/plugin/clearfy) if you can help with the translations. In exchange for your help, we will give you better support and our premium plugins absolutely free!
 
@@ -215,7 +218,7 @@ It looks like that there is already has a `robots.txt` file at the root folder o
 
 = Does Clearfy support a multisite (network)? =
 
-No, it does not. If you need this feature, suggest it on our [support forum](https://wordpress.org/support/plugin/clearfy).
+Plugin has support for multisite only in the premium version [learn more](https://clearfy.pro/pricing/).
 
 = Can I ask questions if I have? =
 
@@ -228,13 +231,83 @@ Of course! To do this, email us your wishes with address, which you will find in
 == Screenshots ==
 
 1. Control panel quick start
-2. WordPress Assets manager, dequeue scripts, dequeue styles
-3. Control panel - confirmation of your list of functions
-4. Control panel seo tab
-5. Control panel comments tab
-6. Features
+2. Image optimizer
+3. Plugin components
+4. Update manager
+5. Assets manager
+
 
 == Changelog ==
+= 1.4.6 =
+* Fixed: Bug when license activated [Call to undefined function mime_content_type].
+* Fixed: Disable comments component: [Uncaught Error: Class 'WCTR_Plugin' not found].
+* Fixed: Removed notifications that cannot be dismissed.
+* Fixed: Update manager component: [Notice: Trying to get property of non-object].
+* Fixed: Update manager component: [Warning: Invalid argument supplied].
+
+= 1.4.5 =
+* Fixed: Update manager component: [Undefined index: clearfy]
+
+= 1.4.4 =
+* Fixed: Added compatibility with ithemes sync
+* Fixed: Assets manager: A bug when the interface did not open on the frontend.
+* Fixed: Unlocked multisite support for individual sites. Network management mode, still remained only for premium.
+
+= 1.4.3 =
+* Fixed: Compatibility with W3 total cache
+* Fixed: Compatibility with External Media without Import
+* Fixed: Fatal error when activating plugin
+* Fixed: Removed tab on the page to get premium for free.
+
+= 1.4.2 =
+* Fixed: Errors in the plugin on user requests
+* New: The Updates Manager component has been completely redesigned, many additional functions have been added.
+* New: The Assets Manager component has been completely redesigned, many additional functions have been added.
+* New: Friendly interface
+* New: Step to php 5.3 and above
+* New: Import/export has been moved to the Clearfy Settings page.
+* Added: Multisite support for most components.
+* Added: Compatibility with external components
+* Added: Additional hooks and filters for white label.
+* Added: New components.
+
+= 1.3.184 =
+* Fixed: Critical error with WCL_Helper::minifyHtml()
+* Fixed: Disable rest api
+* Fixed: Disable emojis
+* Fixed: Translations
+* Fixed: Bug when loading components with Clearfy business
+* Fixed: Added compatibility with Learndash
+* Fixed:
+= 1.3.183 =
+* Fixed: Critical error when plugin activate
+* Fixed: Conflict due to the jsMin library
+* Fixed: Crush of the markup for the additional Clearfy menu in the adminbar
+* Added: Option to disable the extra Clearfy menu in the adminbar
+= 1.3.182 =
+* Fixed: Critical error when plugin update
+= 1.3.181 =
+* Fixed: Fatal error when plugin update
+= 1.3.18 =
+* Added: new component for image optimization. We’ve created a 100% free solution for image optimization, which is as good as the paid products. The plugin optimizes your images automatically, reducing their weight with no quality loss.
+* Added: new component for scripts & styles optimization - this component combines all your scripts and styles in one file, compresses & caches it.
+* Added: new component for HTML compression - we’ve completely redesigned HTML compression of the pages and added these features to another component. It’s more stable and reliable solution for HTML code optimization of your pages.
+* Added: new [premium] component for Hide Wordpress - this premium component helps in hiding your WordPress from hackers and bots. Basically, it disables identification of your CMS by changing directories and files names, removing meta data and replacing HTML content which can provide all information about the platform you use. Most websites can be hacked easily, as hackers and bots know all security flaws in plugins, themes and the WordPress core. You can secure the website from the attack by hiding the information the hackers will need.
+* Added: updated the robots.txt layout (like in Yoast studio)
+* Fixed: compatibility problems with PHP 7.0 in helpers.php
+* Fixed: malfunctioned transliteration in frontend and several custom posts.
+* Fixed: php error instead of the warning message, when a user has already had other webcraftic plugins and tried to add Clearfy.
+* Fixed: some users had problems with the “Remove post pagination” feature – now this option is marked with grey.
+* Fixed: recommended mode for the quick plugin setup has been removed. This has been done because users couldn’t figure out what features they were activating and why.
+* Fixed: problems with editing pages in such popular plugins as elementor and visual composer with enabled “Remove versions from request lines” feature. We’ve decided to keep the version in the request line for authorized users.
+* Added: you can exclude sending the If-Modified-Since header for the main page, because main pages update really rare.
+* Fixed: conflict with the Divi theme – some users were missing the settings panel when the “Hide Admin notification” component was used.
+* Fixed: problem with displaying the Font Awesome icons with enabled asynchronous font loading.
+* The “Hide login page” module turned into the separate component. It is no longer enabled by default. Attention! If you’ve ever used features associated with hiding login page, then, please, re-activate this component.
+* Improvements in activation and deactivation of components.
+* Added: premium version support, licensing page and ability to install paid components.
+* Donate widget has been removed. Now if you want to support our project, you can switch to the premium version and get the best support & extra features.
+
 = 1.2.1 =
 * Fixed: Bug with Buddypress (forum issue BUG. Blank Edit buddypress page)
 * Fixed: In version 1.2.0, changes were lost 1.9.1 and 1.9.2

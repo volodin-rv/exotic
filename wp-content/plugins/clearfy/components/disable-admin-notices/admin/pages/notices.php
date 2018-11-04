@@ -11,24 +11,29 @@
 		exit;
 	}
 
-	class WDN_NoticesPage extends Wbcr_FactoryPages401_ImpressiveThemplate {
+	class WDN_NoticesPage extends Wbcr_FactoryClearfy206_PageBase {
 
 		/**
 		 * The id of the page in the admin menu.
 		 *
 		 * Mainly used to navigate between pages.
-		 * @see FactoryPages401_AdminPage
+		 * @see FactoryPages410_AdminPage
 		 *
 		 * @since 1.0.0
 		 * @var string
 		 */
 		public $id = "notices";
 		public $page_menu_dashicon = 'dashicons-testimonial';
+		/**
+		 * Доступена для мультисайтов
+		 * @var bool
+		 */
+		public $available_for_multisite = true;
 
 		/**
-		 * @param Wbcr_Factory400_Plugin $plugin
+		 * @param Wbcr_Factory409_Plugin $plugin
 		 */
-		public function __construct(Wbcr_Factory400_Plugin $plugin)
+		public function __construct(Wbcr_Factory409_Plugin $plugin)
 		{
 			$this->menu_title = __('Hide admin notices', 'disable-admin-notices');
 
@@ -50,11 +55,10 @@
 				: __('General', 'disable-admin-notices');
 		}
 
-
 		/**
 		 * We register notifications for some actions
 		 * @param array $notices
-		 * @param Wbcr_Factory400_Plugin $plugin
+		 * @param Wbcr_Factory409_Plugin $plugin
 		 * @return array
 		 */
 		public function actionsNotice($notices)
@@ -73,7 +77,7 @@
 					'wbcr_dan_code' => 'interal_error'
 				),
 				'type' => 'danger',
-				'message' => __('An error occurred while trying to delete comments. Internal error occured. Please try again later.', 'factory_pages_401')
+				'message' => __('An error occurred while trying to delete comments. Internal error occured. Please try again later.', 'factory_pages_410')
 			);*/
 
 			return $notices;
@@ -85,7 +89,7 @@
 		 * @since 1.0.0
 		 * @return mixed[]
 		 */
-		public function getOptions()
+		public function getPopulateOptions()
 		{
 			$options = wbcr_dan_get_plugin_options();
 

@@ -13,13 +13,13 @@
 	if( !defined('ABSPATH') ) {
 		exit;
 	}
-	if( !class_exists('Wbcr_Factory400_AssetsList') ) {
+	if( !class_exists('Wbcr_Factory409_AssetsList') ) {
 		/**
 		 * Assets List
 		 *
 		 * @since 1.0.0
 		 */
-		class Wbcr_Factory400_AssetsList {
+		class Wbcr_Factory409_AssetsList {
 
 			protected $all = array();
 			public $header_place = array();
@@ -29,15 +29,15 @@
 			protected $default_place;
 
 			/**
-			 * @var Wbcr_Factory400_Plugin
+			 * @var Wbcr_Factory409_Plugin
 			 */
 			protected $plugin;
 
 			/**
-			 * @param Wbcr_Factory400_Plugin $plugin
+			 * @param Wbcr_Factory409_Plugin $plugin
 			 * @param bool $defaultIsFooter
 			 */
-			public function __construct(Wbcr_Factory400_Plugin $plugin, $defaultIsFooter = true)
+			public function __construct(Wbcr_Factory409_Plugin $plugin, $defaultIsFooter = true)
 			{
 				$this->plugin = $plugin;
 
@@ -47,20 +47,6 @@
 				if( !$defaultIsFooter ) {
 					$this->default_place = &$this->header_place;
 				}
-			}
-
-			/**
-			 * Adds new items to the collection (default place).
-			 * @param mixed
-			 */
-			public function add()
-			{
-				foreach(func_get_args() as $item) {
-					$this->all[] = $item;
-					$this->default_place[] = $item;
-				}
-
-				return $this;
 			}
 
 			/**
@@ -92,36 +78,6 @@
 					if( $key_inFooterPlace ) {
 						unset($this->footer_place[$key_inFooterPlace]);
 					}
-				}
-
-				return $this;
-			}
-
-			/**
-			 * Adds new items to the collection (header).
-			 * @param mixed
-			 */
-			public function addToHeader()
-			{
-
-				foreach(func_get_args() as $item) {
-					$this->all[] = $item;
-					$this->header_place[] = $item;
-				}
-
-				return $this;
-			}
-
-			/**
-			 * Adds new items to the collection (footer).
-			 * @param mixed
-			 */
-			public function addToFooter()
-			{
-
-				foreach(func_get_args() as $item) {
-					$this->all[] = $item;
-					$this->footer_place[] = $item;
 				}
 
 				return $this;

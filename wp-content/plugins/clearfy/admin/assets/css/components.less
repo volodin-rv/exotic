@@ -6,8 +6,29 @@
 
 #WBCR {
   .wbcr-clearfy-components {
-    padding: 20px;
+    padding: 0 20px 20px;
+    text-align: center;
     .plugin-card {
+      position: relative;
+      display: inline-block;
+      width: 32.7%;
+      height: 250px;
+      margin-left: 0;
+      margin-right: 0;
+      text-align: left;
+      float: none;
+      vertical-align: top;
+
+      &:first-child {
+        margin-left: 0;
+      }
+
+      .plugin-card-bottom {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        left: 0;
+      }
 
       .plugin-card-top {
         min-height: 163px;
@@ -25,6 +46,16 @@
         float: right;
       }
 
+      .delete-now {
+        float: right;
+        margin-left: 5px;
+        .dashicons, .dashicons-before:before {
+          font-size: 16px !important;
+          line-height: 1.5 !important;
+          color: #62696f;
+        }
+      }
+
       a.open-plugin-details-modal {
         color: #5c5d5f;
         text-decoration: none;
@@ -32,8 +63,32 @@
         font-size: 15px;
       }
 
+      // Premium
+      .premium-ribbon {
+        position: absolute;
+        bottom: 60px;
+        right: 0;
+        height: 30px;
+        width: 120px;
+        border-radius: 3px 0 0 3px;
+        background-color: #f7dea9;
+        color: #67532f;
+        text-align: center;
+        font-size: 12px;
+        font-weight: 600;
+        line-height: 2.4;
+        text-transform: uppercase;
+        z-index: 1;
+      }
+
+      &.premium {
+        border-color: #e8d7b2;
+        background-color: #fff9eb;
+      }
+
       &.plugin-status-deactive {
-        background-color: #f9f2f1;
+        background-color: #f1f1f1;
+        //background-color: #f9f2f1;
 
         a.open-plugin-details-modal {
           color: #ababab;
@@ -49,9 +104,29 @@
           color: #afafaf;
         }
 
-        .button-success {
-
+        &.premium {
+          background-color: #f9f2f1;
         }
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 1750px) {
+  #WBCR {
+    .wbcr-clearfy-components {
+      .plugin-card {
+        width: 49%;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: 1350px) {
+  #WBCR {
+    .wbcr-clearfy-components {
+      .plugin-card {
+        width: 100%;
       }
     }
   }

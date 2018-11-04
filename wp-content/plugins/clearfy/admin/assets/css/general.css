@@ -3,17 +3,97 @@
  * @author Alex Kovalev <alex.kovalevv@gmail.com> 
  * @copyright Alex Kovalev 23.08.2017 
  */
+.wbcr-clearfy-layer {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: -20px;
+  right: 0;
+  bottom: 0;
+  background: rgba(255, 235, 59, 0.18);
+  z-index: 9;
+}
+#WBCR {
+  /*.wbcr-right-sidebar-section {
+    width: 49%;
+    padding-top: 20px;
+  }*/
+  /**
+  * Widgets
+  */
+  /**
+  * Navigation bar
+  */
+  /*.wbcr-clearfy-board {
+    background: #f9f8f8;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+    min-width: 350px;
+    //float: right;
+  }*/
+}
+#WBCR .wbcr-clr-logo-label {
+  position: relative;
+  padding: 0 10px 3px;
+  border-radius: 5px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+#WBCR .wbcr-clr-logo-label:before {
+  content: '';
+  display: block;
+  position: absolute;
+  width: 20px;
+  height: 25px;
+  top: -10px;
+  right: -10px;
+  background: url(../../../assets/img/webcraftic-plugin-icon.png) 0 0 no-repeat;
+}
+#WBCR .wbcr-clr-logo-label.wbcr-clr-free-label-logo {
+  color: #f1f1f1;
+  background-color: #636363;
+}
+#WBCR .wbcr-clr-logo-label.wbcr-clr-premium-label-logo {
+  color: #000000;
+  background-color: #ffbe00;
+}
 #WBCR .wbcr-content-section,
 #WBCR .wbcr-right-sidebar-section {
   display: inline-block;
   vertical-align: top;
 }
 #WBCR .wbcr-content-section {
-  width: 50%;
+  width: 100%;
 }
-#WBCR .wbcr-right-sidebar-section {
-  width: 49%;
-  padding-top: 20px;
+#WBCR #wbcr-clr-go-to-premium-widget .wbcr-clr-purchase-premium {
+  position: relative;
+  text-decoration: none;
+  font-weight: bold;
+  background: #fffaea;
+  padding: 0;
+  border-radius: 4px;
+  outline: none;
+  margin-top: 15px;
+  box-shadow: 0 0 8px #fddf67;
+}
+#WBCR #wbcr-clr-go-to-premium-widget .wbcr-clr-purchase-premium .fa {
+  position: relative;
+  margin-right: 3px;
+  margin-left: 3px;
+}
+#WBCR .wbcr-factory-left-navigation-bar #components-wbcr_clearfy-tab {
+  border-left: 5px solid #7edbff;
+}
+#WBCR .wbcr-factory-left-navigation-bar #license-wbcr_clearfy-tab {
+  border-left: 5px solid #ffd762;
+}
+#WBCR .wbcr-factory-left-navigation-bar .wbcr-factory-active-tab #license-wbcr_clearfy-tab {
+  font-weight: lighter;
+  color: #222;
+}
+#WBCR .wbcr-factory-left-navigation-bar .wbcr-factory-active-tab #license-wbcr_clearfy-tab .dashicons-admin-network {
+  color: #222;
 }
 #WBCR .wbcr-clearfy-group-header {
   background: #efefef;
@@ -31,15 +111,52 @@
   color: #8c8888;
   font-size: 12px;
 }
-#WBCR .wbcr-clearfy-board {
-  background: #f9f8f8;
-  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-  margin-bottom: 20px;
-  min-width: 350px;
-}
 #WBCR #wbcr-clearfy-quick-mode-board h4 {
   margin-top: 30px;
+}
+#WBCR .wbcr-clearfy-fake-image-optimizer-board .wbcr-clearfy-fake-widget {
+  position: relative;
+  width: 659px;
+  height: 250px;
+}
+#WBCR .wbcr-clearfy-fake-image-optimizer-board .wbcr-clearfy-fake-widget .wbcr-clr-proccess-button {
+  opacity: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -25px 0 0 -100px;
+  width: 200px;
+  height: 50px;
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+  line-height: 3;
+  background: #fdd599 !important;
+  color: #a57b3c !important;
+  text-decoration: none !important;
+  text-shadow: none !important;
+  box-shadow: none !important;
+  border: 1px solid #e0c08f !important;
+  border-radius: 3px;
+  outline: none;
+  -webkit-transition: opacity 1000ms;
+  -moz-transition: opacity 1000ms;
+  -o-transition: opacity 1000ms;
+  transition: opacity 1000ms;
+}
+#WBCR .wbcr-clearfy-fake-image-optimizer-board .wbcr-clearfy-fake-widget:hover .wbcr-clr-proccess-button {
+  display: block;
+  opacity: 1;
+}
+#WBCR .wbcr-clearfy-fake-image-optimizer-board .wbcr-clearfy-fake-widget:hover .wbcr-clearfy-widget-overlay img {
+  opacity: 0.2;
+}
+#WBCR .wbcr-clearfy-fake-image-optimizer-board .wbcr-clearfy-fake-widget .wbcr-clearfy-widget-overlay img {
+  width: 100%;
+  -webkit-transition: opacity 500ms;
+  -moz-transition: opacity 500ms;
+  -o-transition: opacity 500ms;
+  transition: opacity 500ms;
 }
 #WBCR .wbcr-clearfy-switch-success-message,
 #WBCR .wbcr-clearfy-switch-error-message {
@@ -60,19 +177,23 @@
   border-bottom: 3px solid #e2a19c;
   color: #bd6963;
 }
-#WBCR .wbcr-clearfy-export-import-board {
+#WBCR .wbcr-clearfy-troubleshooting {
+  padding: 0 50px 20px;
+}
+#WBCR .wbcr-clearfy-export-import {
+  padding: 0 50px;
   text-align: right;
 }
-#WBCR .wbcr-clearfy-export-import-board label {
+#WBCR .wbcr-clearfy-export-import label {
   display: block;
   width: 100%;
   text-align: left;
   padding: 7px 0;
 }
-#WBCR .wbcr-clearfy-export-import-board #wbcr-clearfy-import-export {
+#WBCR .wbcr-clearfy-export-import #wbcr-clearfy-import-export {
   width: 100%;
   box-sizing: border-box;
-  height: 150px;
+  height: 200px;
   line-height: inherit;
   margin: 0;
   padding: 7px 14px;
@@ -85,7 +206,7 @@
   transition: border-color 0.3s;
   -webkit-appearance: none;
 }
-#WBCR .wbcr-clearfy-export-import-board .wbcr-clearfy-import-options-button {
+#WBCR .wbcr-clearfy-export-import .wbcr-clearfy-import-options-button {
   display: inline-block;
   margin-top: 10px;
 }
@@ -175,8 +296,9 @@
   background-color: #d1e3bd;
 }
 #WBCR #wbcr-clearfy-quick-mode-board .wbcr-clearfy-switch.wbcr-clearfy-loading .wbcr-clearfy-switch-confirmation button {
+  background: url("../img/quick-start-loader.gif") center center no-repeat;
   background-color: #f7f7f7 !important;
-  color: #e0e0e0 !important;
+  font-size: 0;
   cursor: default !important;
 }
 #WBCR #wbcr-clearfy-quick-mode-board .wbcr-clearfy-switch .wbcr-clearfy-switch-confirmation {
@@ -227,19 +349,9 @@
 #WBCR #wbcr-clearfy-quick-mode-board .wbcr-clearfy-switch .wbcr-clearfy-switch-confirmation button:active {
   box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.5);
 }
-#WBCR .wbcr-clearfy-layer {
-  display: none;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(255, 235, 59, 0.18);
-  z-index: 9;
-}
 #WBCR .wbcr-clearfy-confirm-popup {
   display: none;
-  position: absolute;
+  position: fixed;
   top: 50%;
   left: 50%;
   width: 500px;

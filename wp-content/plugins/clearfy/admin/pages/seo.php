@@ -10,13 +10,13 @@
 		exit;
 	}
 
-	class WCL_SeoPage extends WCL_Page {
+	class WCL_SeoPage extends Wbcr_FactoryClearfy206_PageBase {
 
 		/**
 		 * The id of the page in the admin menu.
 		 *
 		 * Mainly used to navigate between pages.
-		 * @see FactoryPages401_AdminPage
+		 * @see FactoryPages410_AdminPage
 		 *
 		 * @since 1.0.0
 		 * @var string
@@ -26,6 +26,8 @@
 		public $page_menu_dashicon = 'dashicons-star-filled';
 
 		public $page_menu_position = 16;
+		
+		public $available_for_multisite = true;
 
 		/**
 		 * @param WCL_Plugin $plugin
@@ -33,6 +35,7 @@
 		public function __construct(WCL_Plugin $plugin)
 		{
 			$this->menu_title = __('SEO', 'clearfy');
+			$this->page_menu_short_description = __('Additional small fixes SEO', 'clearfy');
 
 			parent::__construct($plugin);
 
@@ -60,7 +63,7 @@
 		 * @since 1.0.0
 		 * @return mixed[]
 		 */
-		public function getOptions()
+		public function getPageOptions()
 		{
 			$options = array();
 
@@ -115,11 +118,19 @@
 				'title' => __('Automatically insert the Last Modified header', 'clearfy') . ' <span class="wbcr-clearfy-recomended-text">(' . __('Recommended', 'clearfy') . ')</span>',
 				'default' => false,
 				'eventsOn' => array(
-					'show' => '.factory-control-last_modified_exclude'
+					'show' => '.factory-control-last_modified_exclude, .factory-control-disable_frontpage_last_modified_headers'
 				),
 				'eventsOff' => array(
-					'hide' => '.factory-control-last_modified_exclude'
+					'hide' => '.factory-control-last_modified_exclude, .factory-control-disable_frontpage_last_modified_headers'
 				)
+			);
+			
+			$options[] = array(
+				'type' => 'checkbox',
+				'way' => 'buttons',
+				'name' => 'disable_frontpage_last_modified_headers',
+				'title' => __('Disable Last Modified header on front page', 'clearfy') . ' <span class="wbcr-clearfy-recomended-text">(' . __('Recommended', 'clearfy') . ')</span>',
+				'default' => true,
 			);
 
 			$options[] = array(
@@ -161,7 +172,7 @@
 					'name' => 'yoast_remove_image_from_xml_sitemap',
 					'title' => sprintf(__('Remove the tag %s from XML site map', 'clearfy'), 'image:image') . ' <span class="wbcr-clearfy-recomended-text">(' . __('Recommended', 'clearfy') . ')</span>',
 					'layout' => array('hint-type' => 'icon', 'hint-icon-color' => 'green'),
-					'hint' => __('Yandex.Webmaster swears on a standard XML card from the plugin Yoast, tk. it has a specific tag', 'clearfy') . 'image:image<br><br><b>Clearfy: </b>' . sprintf(__('Remove the tag %s from XML site map of the plugin Yoast SEO.', 'clearfy'), 'image:image') . '<br>--<br><span class="hint-warnign-color">' . __('Attention! After activation, turn off the site map and enable it back to regenerate it.', 'clearfy') . '</span>' . '<br><span class="hint-warnign-color">' . __('In older versions of Yoast SEO may not work - update the plugin Yoast', 'clearfy') . '</span>',
+					'hint' => __('Yandex.Webmaster swears on a standard XML card from the plugin Yoast, tk. it has a specific tag', 'clearfy') . 'image:image<br><br><b>Clearfy: </b>' . sprintf(__('Remove the tag %s from XML site map of the plugin Yoast SEO.', 'clearfy'), 'image:image') . '<br>--<br><span class="wbcr-factory-light-orange-color">' . __('Attention! After activation, turn off the site map and enable it back to regenerate it.', 'clearfy') . '</span>' . '<br><span class="wbcr-factory-light-orange-color">' . __('In older versions of Yoast SEO may not work - update the plugin Yoast', 'clearfy') . '</span>',
 					'default' => false,
 					'eventsOn' => array()
 				);
@@ -194,6 +205,19 @@ schema.org data from the popular Yoast SEO and Yoast SEO Premium plugins.
 There is currently no UI to do so.', 'clearfy') . ' <br><b>Clearfy: </b>' . __('Disable Structured Data in plugin Yoast SEO.', 'clearfy'),
 					'default' => false
 				);
+
+				/*$options[] = array(
+					'type' => 'checkbox',
+					'way' => 'buttons',
+					'name' => 'yoast_canonical_pagination',
+					'title' => sprintf(__('Canonical on pagination pages', 'clearfy'), 'head'),
+					'layout' => array('hint-type' => 'icon', 'hint-icon-color' => 'grey'),
+					'hint' => __('It’s a well-known fact, that the Yoast SEO plugin outputs canonical links on pagination pages, such as /page/2/, /page/3/ and so on. While various search engines treat canonical links differently, it is always better to replace them with the link leading to the main pagination page.
+If enabled, this feature changes the canonical link to the main page or category link.
+When you deactivate some components, permanent links may work incorrectly. If this happens, please, update the structure of the permanent links, so you could complete the deactivation.
+', 'clearfy'),
+					'default' => false
+				);*/
 
 				$options[] = array(
 					'type' => 'checkbox',

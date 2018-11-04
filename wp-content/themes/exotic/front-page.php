@@ -128,11 +128,10 @@
     <a href="/news" class="button basic inverted">Все новости</a>
 </div>
 <!-- News end -->
-
 <?php include 'template-parts/light-block.php' ?>
 
 </main>
-
 </div>
 
 <?php get_footer(); ?>
+<script src="/wp-content/themes/exotic/js/frontpage.js"></script>

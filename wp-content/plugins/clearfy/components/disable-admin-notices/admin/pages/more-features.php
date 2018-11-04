@@ -11,6 +11,6 @@
 		exit;
 	}
 
-	class WDN_MoreFeaturesPage extends Wbcr_FactoryClearfy200_MoreFeaturesPage {
+	class WDN_MoreFeaturesPage extends Wbcr_FactoryClearfy206_MoreFeaturesPage {
 
 	}

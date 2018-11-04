@@ -12,14 +12,14 @@
 		exit;
 	}
 
-	class WbcrCmp_ConfigComments extends Wbcr_FactoryClearfy200_Configurate {
+	class WbcrCmp_ConfigComments extends Wbcr_FactoryClearfy206_Configurate {
 
 		private $modified_types = array();
 
 		/**
-		 * @param Wbcr_Factory400_Plugin $plugin
+		 * @param Wbcr_Factory409_Plugin $plugin
 		 */
-		public function __construct(Wbcr_Factory400_Plugin $plugin)
+		public function __construct(Wbcr_Factory409_Plugin $plugin)
 		{
 			parent::__construct($plugin);
 			$this->plugin = $plugin;
@@ -27,16 +27,6 @@
 
 		public function registerActionsAndFilters()
 		{
-			// Removes the server responses a reference to the xmlrpc file.
-			if( $this->getOption('remove_x_pingback') || $this->isDisabledAllPosts() ) {
-				add_filter('template_redirect', array($this, 'removeXPingbackHeaders'));
-				add_filter('wp_headers', array($this, 'removeXPingback'));
-
-				add_action('template_redirect', array($this, 'linkRelBufferStart'), -1);
-				add_action('get_header', array($this, 'linkRelBufferStart'));
-				add_action('wp_head', array($this, 'linkRelBufferEnd'), 999);
-			}
-
 			// These need to happen now
 			if( $this->isDisabledAllPosts() ) {
 				add_action('widgets_init', array($this, 'disableRcWidget'));
@@ -47,19 +37,19 @@
 				add_action('admin_init', array($this, 'filterAdminBar'));
 			} else {
 
-				if( $this->getOption('comment_text_convert_links_pseudo') || $this->getOption('pseudo_comment_author_link') ) {
+				if( $this->getPopulateOption('comment_text_convert_links_pseudo') || $this->getPopulateOption('pseudo_comment_author_link') ) {
 					add_action('wp_enqueue_scripts', array($this, 'assetsUrlSpanScripts'));
 				}
 
-				if( $this->getOption('comment_text_convert_links_pseudo') ) {
+				if( $this->getPopulateOption('comment_text_convert_links_pseudo') ) {
 					add_filter('comment_text', array($this, 'commentTextConvertLinksPseudo'));
 				}
 
-				if( $this->getOption('pseudo_comment_author_link') ) {
+				if( $this->getPopulateOption('pseudo_comment_author_link') ) {
 					add_filter('get_comment_author_link', array($this, 'pseudoCommentAuthorLink'), 100, 3);
 				}
 
-				if( $this->getOption('remove_url_from_comment_form') ) {
+				if( $this->getPopulateOption('remove_url_from_comment_form') ) {
 					add_filter('comment_form_default_fields', array($this, 'removeUrlFromCommentForm'));
 				}
 			}
@@ -69,19 +59,34 @@
 			add_action('wp_loaded', array($this, 'initWploadedFilters'));
 		}
 
+		/*
+	     * Remove comment links from the admin bar in a multisite network.
+	     */
+		public function removeNetworkCommentLinks($wp_admin_bar)
+		{
+			if( $this->plugin->isNetworkActive() && is_user_logged_in() ) {
+				foreach((array)$wp_admin_bar->user->blogs as $blog) {
+					$wp_admin_bar->remove_menu('blog-' . $blog->userblog_id . '-c');
+				}
+			} else {
+				// We have no way to know whether the plugin is active on other sites, so only remove this one
+				$wp_admin_bar->remove_menu('blog-' . get_current_blog_id() . '-c');
+			}
+		}
+
 		private function isDisabledAllPosts()
 		{
-			return $this->getOption('disable_comments', 'enable_comments') == 'disable_comments';
+			return $this->getPopulateOption('disable_comments', 'enable_comments') == 'disable_comments';
 		}
 
 		private function isDisabledCertainPostTypes()
 		{
-			return $this->getOption('disable_comments', 'enable_comments') == 'disable_certain_post_types_comments';
+			return $this->getPopulateOption('disable_comments', 'enable_comments') == 'disable_certain_post_types_comments';
 		}
 
 		private function isEnabledComments()
 		{
-			return $this->getOption('disable_comments', 'enable_comments') == 'enable_comments';
+			return $this->getPopulateOption('disable_comments', 'enable_comments') == 'enable_comments';
 		}
 
 		/*
@@ -89,19 +94,7 @@
 		 */
 		private function getDisabledPostTypes()
 		{
-			$post_types = $this->getOption('disable_comments_for_post_types');
-
-			if( $this->isDisabledAllPosts() ) {
-				$all_post_types = get_post_types(array('public' => true), 'objects');
-
-				return array_keys($all_post_types);
-			}
-
-			if( is_array($post_types) ) {
-				return $post_types;
-			}
-
-			return explode(',', $post_types);
+			return wbcr_cmp_get_disabled_post_types();
 		}
 
 		/*
@@ -133,7 +126,6 @@
 			// Filters for the admin only
 			if( is_admin() ) {
 				add_action('admin_print_footer_scripts', array($this, 'discussionNotice'));
-				//add_filter('plugin_row_meta', array($this, 'set_plugin_meta'), 10, 2);
 
 				// if only certain types are disabled, remember the original post status
 				if( !$this->isDisabledAllPosts() ) {
@@ -197,6 +189,10 @@
 			if( is_admin_bar_showing() ) {
 				// Remove comments links from admin bar
 				remove_action('admin_bar_menu', 'wp_admin_bar_comments_menu', 60);
+			}
+			
+			if( is_multisite() ) {
+				add_action('admin_bar_menu', array($this, 'removeNetworkCommentLinks'), 500);
 			}
 		}
 
@@ -263,18 +259,14 @@
 		{
 			$post = get_post($post_id);
 
-			return ($this->isDisabledAllPosts() || $this->isPostTypeDisabled($post->post_type))
-				? array()
-				: $comments;
+			return ($this->isDisabledAllPosts() || $this->isPostTypeDisabled($post->post_type)) ? array() : $comments;
 		}
 
 		public function filterCommentStatus($open, $post_id)
 		{
 			$post = get_post($post_id);
 
-			return ($this->isDisabledAllPosts() || $this->isPostTypeDisabled($post->post_type))
-				? false
-				: $open;
+			return ($this->isDisabledAllPosts() || $this->isPostTypeDisabled($post->post_type)) ? false : $open;
 		}
 
 		public function disableRcWidget()
@@ -356,46 +348,8 @@
 			return $fields;
 		}
 
-		public function removeXPingback($headers)
-		{
-			unset($headers['X-Pingback']);
 
-			return $headers;
-		}
-
-		public function removeXPingbackHeaders($headers)
-		{
-			if( function_exists('header_remove') ) {
-				header_remove('X-Pingback');
-				header_remove('Server');
-			}
-		}
-
-		//https://wordpress.stackexchange.com/questions/158700/how-to-remove-pingback-from-head
-
-		public function linkRelBufferCallback($buffer)
-		{
-			$old_buffer = $buffer;
-			$buffer = preg_replace('/(<link.*?rel=("|\')pingback("|\').*?href=("|\')(.*?)("|\')(.*?)?\/?>|<link.*?href=("|\')(.*?)("|\').*?rel=("|\')pingback("|\')(.*?)?\/?>)/i', '', $buffer);
-
-			// todo: fixed bug when return buffer null
-			if( empty($buffer) ) {
-				return $old_buffer;
-			}
-
-			return $buffer;
-		}
-
-		public function linkRelBufferStart()
-		{
-			ob_start(array($this, "linkRelBufferCallback"));
-		}
-
-		public function linkRelBufferEnd()
-		{
-			ob_flush();
-		}
-
+		// todo: Убрать это грязное решение со скриптами.
 		public function assetsUrlSpanScripts()
 		{
 			if( !is_singular() ) {

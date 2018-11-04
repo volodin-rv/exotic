@@ -11,13 +11,13 @@
 		exit;
 	}
 	
-	class WCL_AdvancedPage extends WCL_Page {
+	class WCL_AdvancedPage extends Wbcr_FactoryClearfy206_PageBase {
 
 		/**
 		 * The id of the page in the admin menu.
 		 *
 		 * Mainly used to navigate between pages.
-		 * @see FactoryPages401_AdminPage
+		 * @see FactoryPages410_AdminPage
 		 *
 		 * @since 1.0.0
 		 * @var string
@@ -27,6 +27,8 @@
 		public $page_menu_dashicon = 'dashicons-list-view';
 
 		public $page_menu_position = 1;
+		
+		public $available_for_multisite = true;
 
 		/**
 		 * @param WCL_Plugin $plugin
@@ -34,6 +36,7 @@
 		public function __construct(WCL_Plugin $plugin)
 		{
 			$this->menu_title = __('Advanced', 'clearfy');
+			$this->page_menu_short_description = __('Useful tweaks', 'clearfy');
 
 			parent::__construct($plugin);
 
@@ -61,7 +64,7 @@
 		{
 			parent::warningNotice();
 
-			if( $this->isPostRevisionConstant() ) {
+			if( !$this->plugin->getPopulateOption('revisions_disable') && $this->isPostRevisionConstant() ) {
 				$this->printWarningNotice(__('Warning! In the wp-config.php file, a constant WP_POST_REVISIONS is found, it determines the number of revisions. Delete it so you can change this value through the admin panel.', 'clearfy'));
 			}
 		}
@@ -72,7 +75,7 @@
 		 * @since 1.0.0
 		 * @return mixed[]
 		 */
-		public function getOptions()
+		public function getPageOptions()
 		{
 
 			$options = array();

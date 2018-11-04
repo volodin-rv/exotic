@@ -10,13 +10,13 @@
 		exit;
 	}
 
-	class WCL_WidgetsPage extends WCL_Page {
+	class WCL_WidgetsPage extends Wbcr_FactoryClearfy206_PageBase {
 
 		/**
 		 * The id of the page in the admin menu.
 		 *
 		 * Mainly used to navigate between pages.
-		 * @see FactoryPages401_AdminPage
+		 * @see FactoryPages410_AdminPage
 		 *
 		 * @since 1.0.0
 		 * @var string
@@ -24,6 +24,8 @@
 		public $id = "widgets";
 
 		public $page_menu_dashicon = 'dashicons-networking';
+		
+		public $available_for_multisite = true;
 
 		/**
 		 * @param WCL_Plugin $plugin
@@ -31,6 +33,7 @@
 		public function __construct(WCL_Plugin $plugin)
 		{
 			$this->menu_title = __('Widgets', 'clearfy');
+			$this->page_menu_short_description = __('Disable unused widgets', 'clearfy');
 
 			parent::__construct($plugin);
 
@@ -43,7 +46,7 @@
 		 * @since 1.0.0
 		 * @return mixed[]
 		 */
-		public function getOptions()
+		public function getPageOptions()
 		{
 			$options = array();
 

@@ -45,11 +45,9 @@ function wpexotic_scripts() {
     // подключаем файлы стилей темы
     wp_enqueue_style( 'style.css', get_stylesheet_uri() );
     wp_enqueue_style( 'style', get_template_directory_uri() . '/css/style.css');
-
     // подключаем js файлы
     wp_enqueue_script( 'js', get_template_directory_uri() .'/js/jquery.min.js', array(), '1.0', true );
     wp_enqueue_script( 'header', get_template_directory_uri() .'/js/header.js', array(), '1.0', true );
-    wp_enqueue_script( 'frontpage', get_template_directory_uri() .'/js/frontpage.js', array(), '1.0', true );
     wp_enqueue_script( 'popup', get_template_directory_uri() .'/js/jquery.magnific-popup.min.js', array(), '1.0', true );
     wp_enqueue_script( 'for-view', get_template_directory_uri() .'/js/for-view.js', array(), '1.0', true );
 }

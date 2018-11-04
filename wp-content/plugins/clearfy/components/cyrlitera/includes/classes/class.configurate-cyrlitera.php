@@ -11,20 +11,21 @@
 		exit;
 	}
 
-	class WCTR_ConfigСyrlitera extends Wbcr_FactoryClearfy200_Configurate {
+
+	class WCTR_ConfigСyrlitera extends Wbcr_FactoryClearfy206_Configurate {
 
 		public function registerActionsAndFilters()
 		{
-			if( is_admin() || (defined('XMLRPC_REQUEST') && XMLRPC_REQUEST) ) {
-				if( $this->getOption('use_transliteration') ) {
-					if( !$this->getOption('use_force_transliteration') ) {
+			if( is_admin() || !$this->getPopulateOption('dont_use_transliteration_on_frontend') ) {
+				if( $this->getPopulateOption('use_transliteration') ) {
+					if( !$this->getPopulateOption('use_force_transliteration') ) {
 						add_filter('sanitize_title', 'WCTR_Helper::sanitizeTitle', 0);
 					} else {
 						add_filter('sanitize_title', array($this, 'forceSanitizeTitle'), 99, 2);
 					}
 				}
-				if( $this->getOption('use_transliteration_filename') ) {
-					if( !$this->getOption('use_force_transliteration') ) {
+				if( $this->getPopulateOption('use_transliteration_filename') ) {
+					if( !$this->getPopulateOption('use_force_transliteration') ) {
 						add_filter('sanitize_file_name', array($this, 'sanitizeFileName'), 9);
 					} else {
 						add_filter('sanitize_file_name', array($this, 'forceSanitizeFileName'), 99, 2);
@@ -33,9 +34,7 @@
 			}
 
 			if( !is_admin() ) {
-				add_action('wp', array($this, 'redirectFromOldUrls'), $this->wpForoIsActivated()
-					? 11
-					: 10);
+				add_action('wp', array($this, 'redirectFromOldUrls'), $this->wpForoIsActivated() ? 11 : 10);
 			}
 		}
 
@@ -62,7 +61,7 @@
 
 			$filename = WCTR_Helper::transliterate($filename);
 
-			if( $this->getOption('filename_to_lowercase') ) {
+			if( $this->getPopulateOption('filename_to_lowercase') ) {
 				$filename = strtolower($filename);
 			}
 
@@ -138,7 +137,7 @@
 			if( count($parts) <= 2 ) {
 				$filename = WCTR_Helper::transliterate($filename);
 
-				if( $this->getOption('filename_to_lowercase') ) {
+				if( $this->getPopulateOption('filename_to_lowercase') ) {
 					$filename = strtolower($filename);
 				}
 
@@ -175,7 +174,7 @@
 
 			$filename = WCTR_Helper::transliterate($filename);
 
-			if( $this->getOption('filename_to_lowercase') ) {
+			if( $this->getPopulateOption('filename_to_lowercase') ) {
 				$filename = strtolower($filename);
 			}
 
@@ -201,7 +200,7 @@
 		 */
 		public function redirectFromOldUrls()
 		{
-			if( !WbcrFactoryClearfy200_Helpers::isPermalink() ) {
+			if( !WbcrFactoryClearfy206_Helpers::isPermalink() ) {
 				return;
 			}
 			$is404 = is_404();
@@ -214,7 +213,7 @@
 			}
 
 			if( $is404 ) {
-				if( $this->getOption('redirect_from_old_urls') ) {
+				if( $this->getPopulateOption('redirect_from_old_urls') ) {
 					$current_url = urldecode($_SERVER['REQUEST_URI']);
 					$new_url = WCTR_Helper::transliterate($current_url, true);
 
